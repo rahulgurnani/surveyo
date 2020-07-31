@@ -4,13 +4,15 @@ type Form {
     fields: [Field!]!
 }
 interface Field {
-    id: ID!
     title: String!
 }
 type SingleChoiceField implements Field {
+    id: ID!
     options: [String!]!
 }
-type TextField implements Field {}
+type TextField implements Field {
+    id: ID!
+}
 type Response {
     id: ID!
     form: Form!
