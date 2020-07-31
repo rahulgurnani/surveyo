@@ -1,0 +1,30 @@
+enum QuestionType {
+    MultipleChoice
+    CheckBoxes
+    DropDown
+    ShortAnswer
+    Paragraph
+}
+
+type Question {
+    id: ID!
+    type: QuestionType!
+    question: String!
+    options: [String!]
+    required: Bool!
+    # sensitive is true for personal data. We may want to restrict read access to this. May be set it non-nullable as well
+    sensitive: [Bool]
+}
+
+type Form {
+    id: ID!
+    questions: [Question!]
+}
+
+
+# Sample form response schema. 
+# This will be generated from code in the app when the user is creating the form.
+# 
+type FormResponse_0 {
+
+}
