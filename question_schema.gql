@@ -22,9 +22,27 @@ type Form {
 }
 
 
-# Sample form response schema. 
+# Modeling form response schema.
+# Method 1:
+# Different form response type for each form type
+# it will have name like FormResponse_<Form-id> . It will have fields like response_<question-id> <ResponseType> etc.
 # This will be generated from code in the app when the user is creating the form.
-# 
+# tricky part: Handling an edit to Form
 type FormResponse_0 {
+    
+}
 
+
+# alternative way to model responses in which we don't create a new form response type
+# caveats handle types, required etc in our code
+type FormResponse {
+    id: ID!
+    responses: [QuestionReponse]
+}
+
+type QuestionReponse {
+    question_id: ID!
+    string_response: String
+    mcq_response: Int
+    # etc. 
 }
