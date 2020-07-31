@@ -3,28 +3,34 @@ type Form {
     title: String!
     fields: [Field!]!
 }
-interface Field {
+
+type Field {
+    id: ID!
     title: String!
+
+    type: FieldType!
+    order: Int!
+
+    options: [String!]
 }
-type SingleChoiceField implements Field {
-    id: ID!
-    options: [String!]!
+
+enum FieldType {
+    SingleChoice
+    Text
 }
-type TextField implements Field {
-    id: ID!
-}
+
 type Response {
     id: ID!
     form: Form!
     entries: [Entry!]!
 }
-interface Entry {
+
+type Entry {
     id: ID!
     field: Field!
-}
-type SingleChoiceEntry implements Entry {
-    option: String!
-}
-type TextEntry implements Entry {
-    text: String!
+
+    _dateTime: DateTime
+    _int: Int
+    _string: String
+    _stringList: [String]
 }
