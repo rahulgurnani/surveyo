@@ -1,0 +1,28 @@
+type Form {
+    id: ID!
+    title: String!
+    fields: [Field!]!
+}
+interface Field {
+    id: ID!
+    title: String!
+}
+type SingleChoiceField implements Field {
+    options: [String!]!
+}
+type TextField implements Field {}
+type Response {
+    id: ID!
+    form: Form!
+    entries: [Entry!]!
+}
+interface Entry {
+    id: ID!
+    field: Field!
+}
+type SingleChoiceEntry implements Entry {
+    option: String!
+}
+type TextEntry implements Entry {
+    text: String!
+}
