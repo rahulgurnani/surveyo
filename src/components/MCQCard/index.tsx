@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Radio } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Radio, Card, Row, Col } from 'antd';
+import { MinusCircleOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const formItemLayout = {
   labelCol: {
@@ -34,12 +34,18 @@ const rowC = {
 
 
 // display:flex; flex-direction:row;
-function MCQCard() {
+function MCQCard(props: any) {
   // const onFinish = (values: any) => {
   //   console.log('Received values of form:', values);
   // };
   
     return (<div>
+      <Card
+      bordered={false}
+      actions={[
+        <DeleteOutlined  key="setting" label="Check2" onClick={(e) => {props.deleteCard(props.listId)}} />,
+        ]}
+      >
     <Input placeholder="Enter your question here" allowClear />
     <br/>
     <br/>
@@ -57,31 +63,41 @@ function MCQCard() {
                 key={field.key}
               >
                 <div >
-              <Radio style={radioStyle} value={1}>
-                <Form.Item
-                  {...field}
-                  validateTrigger={['onChange', 'onBlur']}
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      message: "Please input option",
-                    },
-                  ]}
-                  noStyle
-                >
-                  <Input placeholder="Please input option" style={{ width: '60%' }} />
-                </Form.Item>
-              </Radio>
-                {fields.length > 1 ? (
-                  <MinusCircleOutlined
-                    className="dynamic-delete-button"
-                    style={{ margin: '0 8px' }}
-                    onClick={() => {
-                      remove(field.name);
-                    }}
-                  />
-                ) : null}
+                <Row>
+                  <Col span={16}>
+                  <div>
+                  <Radio style={radioStyle} value={1}>
+                    <Form.Item
+                      {...field}
+                      validateTrigger={['onChange', 'onBlur']}
+                      rules={[
+                        {
+                          required: true,
+                          whitespace: true,
+                          message: "Please input option",
+                        },
+                      ]}
+                      noStyle
+                    >
+                      <Input placeholder="Please input option" style={{ width: '60%' }} />
+                    </Form.Item>
+                  </Radio>
+                  </div>
+                  </Col>
+                  <Col span={8}>
+                  <div>
+                    {fields.length > 1 ? (
+                      <MinusCircleOutlined
+                        className="dynamic-delete-button"
+                        style={{ margin: '0 8px' }}
+                        onClick={() => {
+                          remove(field.name);
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                  </Col>
+                </Row>
                 </div>
               </Form.Item>
             ))}
@@ -101,6 +117,7 @@ function MCQCard() {
       }}
     </Form.List>
   </Form>
+  </Card>
   </div>
   );
 }

@@ -9,9 +9,9 @@ function App() {
   return (
     <div className="App">
     <Row>
-      <Col span={6}>Check</Col>
+      <Col span={6}></Col>
       <Col span={12}><BigCard></BigCard></Col>
-      <Col span={6}>col-12</Col>
+      <Col span={6}></Col>
     </Row>
     </div>
   );

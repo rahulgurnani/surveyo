@@ -7,7 +7,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 // type BigCardState = {children: []}
 
-function TextQuestionCard() {
+function TextQuestionCard(props: any) {
     // const onChange = (e: any) => {
     //   console.log(e);
     // };
@@ -15,7 +15,7 @@ function TextQuestionCard() {
       <Card
       bordered={false}
       actions={[
-        <DeleteOutlined  key="setting" label="Check2" />,
+        <DeleteOutlined  key="setting" label="Check2" onClick={(e) => {props.deleteCard(props.listId)}} />,
         ]}>
       <Input placeholder="Enter your question here" allowClear />
       <br />

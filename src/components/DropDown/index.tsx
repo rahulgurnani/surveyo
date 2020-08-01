@@ -5,18 +5,18 @@ import { Select } from 'antd';
 const { Option } = Select;
 // type BigCardState = {children: []}
 
-function DropDown() {
-    // const onChange = (e: any) => {
-    //   console.log(e);
-    // };
+function DropDown(props: any) {
+
+
     return (<div>
-      <Select defaultValue="TextQ" dropdownMatchSelectWidth={false} >
-        <Option value="TextQ">Short Answer</Option>
-        <Option value="MCQ">Multiple Choice</Option>
-        <Option value="Date">Date</Option>
+      <Select defaultValue="text" dropdownMatchSelectWidth={false} onChange={(e) => props.changeCardType(e)}>
+        <Option value="text">Short Answer</Option>
+        <Option value="mcq">Multiple Choice</Option>
+        <Option value="date">Date</Option>
       </Select>
       </div>
     );
 }
 
 export default DropDown;
+
