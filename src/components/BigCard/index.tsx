@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card, Avatar } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import { BorderInnerOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import header from '../../images/header.jpg';
 const { Meta } = Card;
-
 function BigCard() {
     return (<div>
       <Card
@@ -16,7 +15,7 @@ function BigCard() {
     }
     actions={[
       <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
+      <BorderInnerOutlined key="edit" />,
       <EllipsisOutlined key="ellipsis" />,
     ]}
   >
