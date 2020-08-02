@@ -11,7 +11,7 @@ interface Field {
 }
 
 type SingleChoiceField implements Field {
-    options: [String!]!
+    options: [Option!]!
 }
 
 type TextField implements Field {
@@ -30,9 +30,15 @@ interface Entry {
 }
 
 type SingleChoiceEntry implements Entry {
-    option: String!
+    option: Option!
 }
 
 type TextEntry implements Entry {
     text: String!
+}
+
+type Option {
+    id: ID!
+    title: String!
+    order: Int!
 }
