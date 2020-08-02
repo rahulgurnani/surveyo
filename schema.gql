@@ -10,6 +10,7 @@ type Field {
     type: FieldType!
     title: String!
     options: [FieldOption!]
+    count: Int
 }
 
 enum FieldType {
