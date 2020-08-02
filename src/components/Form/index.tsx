@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert, Card, Form, Input, DatePicker, Radio, Rate} from 'antd';
-
 import {useQuery, gql} from '@apollo/client';
+import {useParams} from 'react-router-dom';
 
 function SyForm(props: SyFormProps): JSX.Element {
   function fieldBuilder(field: SyField): JSX.Element {
@@ -92,13 +92,11 @@ const GET_FORM = gql`
   }
 `;
 
-type GqlFormProps = {
-  id: string;
-};
+export default function GqlForm() {
+  const {id} = useParams();
 
-function GqlForm(props: GqlFormProps) {
   const {loading, error, data} = useQuery(GET_FORM, {
-    variables: {id: props.id},
+    variables: {id},
   });
 
   if (loading) return <Card title loading />;
