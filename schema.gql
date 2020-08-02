@@ -36,8 +36,8 @@ type Entry {
     id: ID!
     field: Field!
 
-    _dateTime: DateTime
-    _int: Int
-    _string: String
-    _option: FieldOption
+    date: DateTime
+    rating: Int
+    singleChoice: FieldOption
+    text: String
 }

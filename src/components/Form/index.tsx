@@ -1,43 +1,164 @@
-import React from 'react';
-import {Alert, Card, Form, Input, DatePicker, Radio, Rate} from 'antd';
-import {useQuery, gql} from '@apollo/client';
+import React, {useState} from 'react';
+import {Alert, Button, Card, Form, Input, DatePicker, Radio, Rate} from 'antd';
+import {useQuery, useMutation, gql} from '@apollo/client';
 import {useParams} from 'react-router-dom';
 
+function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
+  return arr.map((element, elementIdx) => {
+    if (elementIdx === idx) {
+      return func(element);
+    }
+    return element;
+  });
+}
+
 function SyForm(props: SyFormProps): JSX.Element {
-  function fieldBuilder(field: SyField): JSX.Element {
+  const [state, setState] = useState({
+    form: {id: props.id},
+    entries: props.fields.map(field => {
+      return {
+        field: {
+          id: field.id,
+        },
+      };
+    }),
+  });
+
+  const [submitResponse, {loading}] = useMutation(CREATE_RESPONSE);
+
+  console.log(state);
+
+  function handleRadioChange(event: any, idx: number) {
+    const value = event.target.value;
+
+    setState(state => {
+      const entries = replaceAt(state.entries, idx, entry => {
+        return {
+          ...entry,
+          singleChoice: {
+            id: value,
+          },
+        };
+      });
+
+      return {
+        ...state,
+        entries,
+      };
+    });
+  }
+
+  function handleRateChange(event: any, idx: number) {
+    const value = event;
+
+    setState(state => {
+      const entries = replaceAt(state.entries, idx, entry => {
+        return {
+          ...entry,
+          rating: value,
+        };
+      });
+
+      return {
+        ...state,
+        entries,
+      };
+    });
+  }
+
+  function handleInputChange(event: any, idx: number) {
+    const value = event.target.value;
+
+    setState(state => {
+      const entries = replaceAt(state.entries, idx, entry => {
+        return {
+          ...entry,
+          text: value,
+        };
+      });
+
+      return {
+        ...state,
+        entries,
+      };
+    });
+  }
+
+  function handleDatePickerChange(event: any, idx: number) {
+    const value = event;
+
+    setState(state => {
+      const entries = replaceAt(state.entries, idx, entry => {
+        return {
+          ...entry,
+          date: value,
+        };
+      });
+
+      return {
+        ...state,
+        entries,
+      };
+    });
+  }
+
+  function createField(field: SyField, idx: number): JSX.Element {
     switch (field.type) {
       case 'Date':
-        return <DatePicker />;
+        return (
+          <DatePicker onChange={event => handleDatePickerChange(event, idx)} />
+        );
       case 'Rating':
-        return <Rate allowClear count={field.count} />;
+        return (
+          <Rate
+            allowClear
+            count={field.count}
+            onChange={event => handleRateChange(event, idx)}
+          />
+        );
       case 'SingleChoice':
         return (
-          <Radio.Group>
+          <Radio.Group onChange={event => handleRadioChange(event, idx)}>
             {field.options.map(option => (
-              <Radio key={option.order} value={option.id}>
+              <Radio key={option.id} value={option.id}>
                 {option.title}
               </Radio>
             ))}
           </Radio.Group>
         );
       case 'Text':
-        return <Input />;
+        return <Input onChange={event => handleInputChange(event, idx)} />;
     }
   }
 
-  const fields = props.fields.map(field => {
+  async function handleSubmit() {
+    const response = await submitResponse({
+      variables: {response: state},
+    });
+    console.log('response', response);
+  }
+
+  const fields = props.fields.map((field, idx) => {
     return (
-      <Card type="inner">
+      <Card key={idx} type="inner">
         <p>{field.title}</p>
-        <Form.Item>{fieldBuilder(field)}</Form.Item>
+        <Form.Item>{createField(field, idx)}</Form.Item>
       </Card>
     );
   });
 
-  return <Form>{fields}</Form>;
+  return (
+    <Form>
+      {fields}
+      <Form.Item>
+        <Button onClick={handleSubmit}>Submit</Button>
+      </Form.Item>
+    </Form>
+  );
 }
 
 type SyFormProps = {
+  id: string;
   title: string;
   fields: SyField[];
 };
@@ -63,30 +184,39 @@ type SyFieldText = SyFieldBase & {
 };
 
 type SyFieldBase = {
-  order: number;
+  id: string;
   title: string;
 };
 
 type SyFieldOptions = {
   id: string;
-  order: number;
   title: string;
 };
 
 const GET_FORM = gql`
   query($id: ID!) {
     getForm(id: $id) {
+      id
       title
       fields(order: {asc: order}) {
-        order
+        id
         title
         type
         options(order: {asc: order}) {
           id
-          order
           title
         }
         count
+      }
+    }
+  }
+`;
+
+const CREATE_RESPONSE = gql`
+  mutation($response: AddResponseInput!) {
+    addResponse(input: [$response]) {
+      response {
+        id
       }
     }
   }
@@ -99,14 +229,17 @@ export default function GqlForm() {
     variables: {id},
   });
 
-  if (loading) return <Card title loading />;
+  if (loading) {
+    return <Card title loading />;
+  }
 
-  if (error)
+  if (error) {
     return (
       <Card title>
         <Alert message={error.message} type="warning" />
       </Card>
     );
+  }
 
   return (
     <Card title={data.getForm.title}>
