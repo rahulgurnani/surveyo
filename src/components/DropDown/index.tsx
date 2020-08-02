@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { Select } from 'antd';
+import React, {useState} from 'react';
+import {Select} from 'antd';
 
-
-const { Option } = Select;
+const {Option} = Select;
 // type BigCardState = {children: []}
 
 function DropDown(props: any) {
-
-
-    return (<div>
-      <Select defaultValue="text" dropdownMatchSelectWidth={false} onChange={(e) => props.changeCardType(e)}>
-        <Option value="text">Short Answer</Option>
-        <Option value="mcq">Multiple Choice</Option>
+  return (
+    <div>
+      <Select
+        defaultValue="Text"
+        dropdownMatchSelectWidth={false}
+        onChange={e => props.changeCardType(e)}
+      >
+        <Option value="Text">Short Answer</Option>
+        <Option value="SingleChoice">Multiple Choice</Option>
         {/* <Option value="date">Date</Option> */}
       </Select>
-      </div>
-    );
+    </div>
+  );
 }
 
 export default DropDown;
-
