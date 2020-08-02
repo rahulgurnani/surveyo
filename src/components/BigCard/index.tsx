@@ -1,87 +1,110 @@
-import React, { useState } from 'react';
-import { Card, Avatar, Select } from 'antd';
-import { BorderInnerOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Card, Avatar, Select, Button} from 'antd';
+import update from 'immutability-helper';
+import {gql, useMutation} from '@apollo/client';
+import {
+  BorderInnerOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import header from '../../images/banner4.jpg';
 
-import TextQuestionCard from '../TextQuestionCard'
-import MCQCard from '../MCQCard'
-import DropDown from '../DropDown'
-const { Meta } = Card;
-
+import TextQuestionCard from '../TextQuestionCard';
+import MCQCard from '../MCQCard';
+import DropDown from '../DropDown';
+const {Meta} = Card;
 
 // type BigCardState = {children: []}
+type question = any;
 
 function BigCard() {
-    const [children, modifyChildren] = useState<JSX.Element[]>( [] );
-    const [count, setCount] = useState( 0 );
-    const [questionCard, setQuestionCard] = useState("text")
+  const [questions, setQuestions] = useState<question>([]);
+  const [questionCard, setQuestionCard] = useState('Text');
 
-    const deleteCard = (id: string) => {
-      console.log("ID is: ",id)
-      // setCount(count => count - 1)
-      modifyChildren(children => {
-        console.log(children)
-        let newChildren = children.filter((value, index,array) => value.key != id )
-        console.log(newChildren)
-        return newChildren
-      })
+  const getCard = (i: number) => {
+    const question = questions[i];
+    const params = {
+      question: question,
+      updateQuestion: (question: question) =>
+        setQuestions(update(questions, {$splice: [[i, 1, question]]})),
+      deleteQuestion: () =>
+        setQuestions(update(questions, {$splice: [[i, 1]]})),
+    };
+    switch (question.type) {
+      case 'SingleChoice':
+        return <MCQCard {...params} />;
+      default:
+        return <TextQuestionCard {...params} />;
     }
+  };
 
-    const addCard = () => {
-      setCount(count => count + 1)
-      modifyChildren(children => [...children, <div key={count}><Card > {getCard(questionCard, count)} </Card><br/><br/></div>])
-    }
-
-    const getCard = (questionType: string, listId: any) => {
-      switch(questionType){
-        case "text":
-          return <TextQuestionCard deleteCard={deleteCard} listId={listId}/>
-        case "mcq":
-          return <MCQCard deleteCard={deleteCard} listId={listId}/>
-        default:
-          return <TextQuestionCard deleteCard={deleteCard} listId={listId}/>
+  const CREATE_FORM = gql`
+    mutation($form: AddFormInput!) {
+      addForm(input: [$form]) {
+        form {
+          id
+        }
       }
     }
+  `;
 
+  const [sendToClient, {loading}] = useMutation(CREATE_FORM, {
+    variables: {questions},
+  });
 
-
-    return (<div>
-      <Card
-    cover={
-      <img
-        alt="example"
-        src={header}
-        // style={{ height: 240 }}
-      />
-      
+  const sendState = () => {
+    for (let index = 0; index < questions.length; index++) {
+      if ('options' in questions[index]) {
+        let newOptions = questions[index].options.map(
+          (value: any, index: any) => {
+            return {order: index, title: value};
+          }
+        );
+        questions[index].options = newOptions;
+      }
     }
-    // style={{ width: 240 }}
-    actions={[
-      <DropDown changeCardType={setQuestionCard}/>,
-      <BorderInnerOutlined key="edit" onClick={ () => addCard() } />,
-    //   <EllipsisOutlined key="ellipsis" />,
-    ]}
-  >
-    <Meta
-    //   avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-      title="Surveyo"
-      description="Simple App that let's you create simple surveys"
-    />
-    <br/>
-    <br/>
+    console.log(questions);
+    sendToClient();
+  };
 
-    {children}
-    <br/>
-    <br/>
-  </Card>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-      </div>
-    );
+  return (
+    <div>
+      <Card
+        cover={<img alt="example" src={header} />}
+        actions={[
+          <DropDown changeCardType={setQuestionCard} />,
+          <BorderInnerOutlined
+            key="edit"
+            onClick={() => setQuestions(questions.concat({type: questionCard}))}
+          />,
+          <Button onClick={() => sendState()}> Create Form</Button>,
+        ]}
+      >
+        <Meta
+          title="Surveyo"
+          description="Simple App that let's you create simple surveys"
+        />
+        <br />
+        <br />
+
+        {questions.map((question: question, index: number) => (
+          <div key={index}>
+            <Card>{getCard(index)}</Card>
+            <br />
+            <br />
+          </div>
+        ))}
+        <br />
+        <br />
+      </Card>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+  );
 }
 
 export default BigCard;

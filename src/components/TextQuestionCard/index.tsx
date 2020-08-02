@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
-import { Card, Input, Select } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Card, Input, Select} from 'antd';
+import {DeleteOutlined} from '@ant-design/icons';
 
+const {TextArea} = Input;
+const {Option} = Select;
 
-const { TextArea } = Input;
-const { Option } = Select;
-
-function TextQuestionCard(props: any) {
-    return (<div>
+function TextQuestionCard({question, updateQuestion, deleteQuestion}: any) {
+  return (
+    <div>
       <Card
-      bordered={false}
-      actions={[
-        <DeleteOutlined  key="setting" label="Check2" onClick={(e) => {props.deleteCard(props.listId)}} />,
-        ]}>
-      <Input placeholder="Enter your question here" allowClear />
-      <br />
-      <br />
-      <TextArea placeholder="Short answer here" allowClear  disabled />
+        bordered={false}
+        actions={[
+          <DeleteOutlined
+            key="setting"
+            label="Check2"
+            onClick={e => {
+              deleteQuestion();
+            }}
+          />,
+        ]}
+      >
+        <Input
+          placeholder="Enter your question here"
+          allowClear
+          value={question.title}
+          onChange={e => updateQuestion({...question, title: e.target.value})}
+        />
+        <br />
+        <br />
+        <TextArea placeholder="Short answer here" allowClear disabled />
       </Card>
-      </div>
-    );
+    </div>
+  );
 }
 
 export default TextQuestionCard;
