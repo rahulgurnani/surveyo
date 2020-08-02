@@ -5,12 +5,8 @@ import { DeleteOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Option } = Select;
-// type BigCardState = {children: []}
 
 function TextQuestionCard(props: any) {
-    // const onChange = (e: any) => {
-    //   console.log(e);
-    // };
     return (<div>
       <Card
       bordered={false}

@@ -12,7 +12,7 @@ function DropDown(props: any) {
       <Select defaultValue="text" dropdownMatchSelectWidth={false} onChange={(e) => props.changeCardType(e)}>
         <Option value="text">Short Answer</Option>
         <Option value="mcq">Multiple Choice</Option>
-        <Option value="date">Date</Option>
+        {/* <Option value="date">Date</Option> */}
       </Select>
       </div>
     );
