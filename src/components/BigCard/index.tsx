@@ -12,6 +12,12 @@ import header from '../../images/banner4.jpg';
 import TextQuestionCard from '../TextQuestionCard';
 import MCQCard from '../MCQCard';
 import DropDown from '../DropDown';
+
+import { ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { error } from 'console';
+
+
 const {Meta} = Card;
 
 // type BigCardState = {children: []}
@@ -20,6 +26,19 @@ type question = any;
 function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
   const [questionCard, setQuestionCard] = useState('Text');
+
+
+  const CREATE_FORM = gql`
+    mutation($form: AddFormInput!) {
+      addForm(input: [$form]) {
+        form {
+          id
+        }
+      }
+    }
+  `;
+
+  const [sendToClient, {loading}] = useMutation(CREATE_FORM);
 
   const getCard = (i: number) => {
     const question = questions[i];
@@ -38,35 +57,6 @@ function BigCard() {
     }
   };
 
-  const CREATE_FORM = gql`
-    mutation($form: AddFormInput!) {
-      addForm(input: [$form]) {
-        form {
-          id
-        }
-      }
-    }
-  `;
-
-  const [sendToClient, {loading}] = useMutation(CREATE_FORM, {
-    variables: {questions},
-  });
-
-  const sendState = () => {
-    for (let index = 0; index < questions.length; index++) {
-      if ('options' in questions[index]) {
-        let newOptions = questions[index].options.map(
-          (value: any, index: any) => {
-            return {order: index, title: value};
-          }
-        );
-        questions[index].options = newOptions;
-      }
-    }
-    console.log(questions);
-    sendToClient();
-  };
-
   return (
     <div>
       <Card
@@ -77,7 +67,40 @@ function BigCard() {
             key="edit"
             onClick={() => setQuestions(questions.concat({type: questionCard}))}
           />,
-          <Button onClick={() => sendState()}> Create Form</Button>,
+          <Button onClick={async () => {
+            for (let index = 0; index < questions.length; index++) {
+              if ('options' in questions[index]) {
+                let newOptions = questions[index].options.map(
+                  (value: any, index: any) => {
+                    return {order: index, title: value};
+                  }
+                );
+                questions[index].options = newOptions;
+              }
+              questions[index].order = index;
+            }
+            var form = {
+              title: "Random",
+              fields: questions
+            };
+            
+            console.log("Form: ", form);
+
+            try {
+              var result = await sendToClient(
+                {
+                  variables: {
+                    form: form
+                  }
+                });
+                
+              console.log(result);
+            } catch(error) {
+              console.log(error);
+            }
+            
+
+          }}> Create Form</Button>,
         ]}
       >
         <Meta
