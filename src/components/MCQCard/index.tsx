@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form, Input, Button, Radio, Card, Row, Col} from 'antd';
+import {Form, Input, Button, Radio, Card, Row, Col, Checkbox} from 'antd';
 import update from 'immutability-helper';
 import {
   MinusCircleOutlined,
@@ -56,6 +56,14 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
           value={question.title}
           onChange={e => updateQuestion({...question, title: e.target.value})}
         />
+        <br></br>
+        <Checkbox
+          onChange={e =>
+            updateQuestion({...question, required: e.target.checked})
+          }
+        >
+          Want this to be a required field
+        </Checkbox>
         <br />
         <br />
         <Form
