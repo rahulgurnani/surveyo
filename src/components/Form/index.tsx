@@ -1,7 +1,27 @@
 import React, {useState} from 'react';
-import {Alert, Button, Card, Form, Input, DatePicker, Radio, Rate} from 'antd';
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  Result,
+  Input,
+  DatePicker,
+  Radio,
+  Rate,
+  Layout,
+  Row,
+  PageHeader,
+  Col,
+  message,
+} from 'antd';
+
+import {Typography} from 'antd';
+
 import {useQuery, useMutation, gql} from '@apollo/client';
 import {useParams} from 'react-router-dom';
+
+import logo from '../../images/logo.svg';
 
 function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
   return arr.map((element, elementIdx) => {
@@ -23,12 +43,23 @@ function SyForm(props: SyFormProps): JSX.Element {
       };
     }),
   });
-
-  const [submitResponse, {loading}] = useMutation(CREATE_RESPONSE);
-
   console.log(state);
 
-  function handleRadioChange(event: any, idx: number) {
+  const [submitResponse, {loading: loadingResponse}] = useMutation(
+    CREATE_RESPONSE
+  );
+
+  if ((state as any).submitted) {
+    return (
+      <Result
+        status="success"
+        title="Thank you!"
+        subTitle="Your response has been recorded."
+      />
+    );
+  }
+
+  const handleRadioChange = (idx: number) => (event: any) => {
     const value = event.target.value;
 
     setState(state => {
@@ -46,9 +77,9 @@ function SyForm(props: SyFormProps): JSX.Element {
         entries,
       };
     });
-  }
+  };
 
-  function handleRateChange(event: any, idx: number) {
+  const handleRateChange = (idx: number) => (event: any) => {
     const value = event;
 
     setState(state => {
@@ -64,9 +95,9 @@ function SyForm(props: SyFormProps): JSX.Element {
         entries,
       };
     });
-  }
+  };
 
-  function handleInputChange(event: any, idx: number) {
+  const handleInputChange = (idx: number) => (event: any) => {
     const value = event.target.value;
 
     setState(state => {
@@ -82,9 +113,9 @@ function SyForm(props: SyFormProps): JSX.Element {
         entries,
       };
     });
-  }
+  };
 
-  function handleDatePickerChange(event: any, idx: number) {
+  const handleDatePickerChange = (idx: number) => (event: any) => {
     const value = event;
 
     setState(state => {
@@ -100,25 +131,25 @@ function SyForm(props: SyFormProps): JSX.Element {
         entries,
       };
     });
-  }
+  };
 
-  function createField(field: SyField, idx: number): JSX.Element {
+  const createField = (field: SyField, idx: number): JSX.Element => {
     switch (field.type) {
       case 'Date':
         return (
-          <DatePicker onChange={event => handleDatePickerChange(event, idx)} />
+          <DatePicker mode="date" onChange={handleDatePickerChange(idx)} />
         );
       case 'Rating':
         return (
           <Rate
             allowClear
             count={field.count}
-            onChange={event => handleRateChange(event, idx)}
+            onChange={handleRateChange(idx)}
           />
         );
       case 'SingleChoice':
         return (
-          <Radio.Group onChange={event => handleRadioChange(event, idx)}>
+          <Radio.Group onChange={handleRadioChange(idx)}>
             {field.options.map(option => (
               <Radio key={option.id} value={option.id}>
                 {option.title}
@@ -127,33 +158,69 @@ function SyForm(props: SyFormProps): JSX.Element {
           </Radio.Group>
         );
       case 'Text':
-        return <Input onChange={event => handleInputChange(event, idx)} />;
+        return (
+          <Input
+            placeholder="Write something..."
+            onChange={handleInputChange(idx)}
+          />
+        );
     }
-  }
+  };
 
   async function handleSubmit() {
-    const response = await submitResponse({
-      variables: {response: state},
-    });
-    console.log('response', response);
+    try {
+      const response = await submitResponse({
+        variables: {response: state},
+      });
+      setState({submitted: true} as any);
+      console.log(response);
+    } catch (e) {
+      message.error(`${e}`);
+    }
   }
 
   const fields = props.fields.map((field, idx) => {
     return (
-      <Card key={idx} type="inner">
-        <p>{field.title}</p>
-        <Form.Item>{createField(field, idx)}</Form.Item>
-      </Card>
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          <Card key={idx} type="inner" style={{borderRadius: '4px'}}>
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <Card.Meta style={{margin: 0}} title={field.title} />
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <Form.Item style={{margin: 0}}>
+                  {createField(field, idx)}
+                </Form.Item>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
     );
   });
 
   return (
-    <Form>
-      {fields}
-      <Form.Item>
-        <Button onClick={handleSubmit}>Submit</Button>
-      </Form.Item>
-    </Form>
+    <PageHeader ghost={true} title={props.title}>
+      <Form onFinish={handleSubmit}>
+        {fields}
+        <Row>
+          <Col span={24} style={{textAlign: 'right'}}>
+            <Form.Item>
+              <Button
+                htmlType="submit"
+                loading={loadingResponse}
+                type="primary"
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </PageHeader>
   );
 }
 
@@ -222,7 +289,31 @@ const CREATE_RESPONSE = gql`
   }
 `;
 
-export default function GqlForm() {
+export default function FormPage() {
+  return (
+    <Layout>
+      <Layout.Header
+        style={{textAlign: 'center', background: '#fff', padding: 0}}
+      >
+        <img style={{height: '32px'}} src={logo} />
+      </Layout.Header>
+      <Layout>
+        <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
+        <Layout.Content>
+          <GqlForm />
+        </Layout.Content>
+        <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
+      </Layout>
+      <Layout.Footer>
+        <Typography.Paragraph style={{textAlign: 'center'}}>
+          Copyright &copy; Surveyo. All rights reserved.
+        </Typography.Paragraph>
+      </Layout.Footer>
+    </Layout>
+  );
+}
+
+function GqlForm() {
   const {id} = useParams();
 
   const {loading, error, data} = useQuery(GET_FORM, {
@@ -230,20 +321,34 @@ export default function GqlForm() {
   });
 
   if (loading) {
-    return <Card title loading />;
-  }
-
-  if (error) {
     return (
-      <Card title>
-        <Alert message={error.message} type="warning" />
-      </Card>
+      <>
+        <PageHeader title="...">
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Card loading />
+            </Col>
+          </Row>
+
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Card loading />
+            </Col>
+          </Row>
+
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Card loading />
+            </Col>
+          </Row>
+        </PageHeader>
+      </>
     );
   }
 
-  return (
-    <Card title={data.getForm.title}>
-      <SyForm {...data.getForm} />
-    </Card>
-  );
+  if (error) {
+    return <Alert message={error.message} type="warning" />;
+  }
+
+  return <SyForm {...data.getForm} />;
 }

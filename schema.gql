@@ -2,12 +2,14 @@ type Form {
     id: ID!
     title: String!
     fields: [Field!]!
+    responses: [Response!]
 }
 
 type Field {
     id: ID!
     order: Int!
     type: FieldType!
+    entries: [Entry!]
     title: String!
     options: [FieldOption!]
     count: Int
@@ -28,13 +30,14 @@ type FieldOption {
 
 type Response {
     id: ID!
-    form: Form!
-    entries: [Entry!]!
+    form: Form! @hasInverse(field: responses)
+    entries: [Entry!]! @hasInverse(field: response)
 }
 
 type Entry {
     id: ID!
-    field: Field!
+    response: Response!
+    field: Field! @hasInverse(field: entries)
 
     date: DateTime
     rating: Int
