@@ -21,7 +21,6 @@ import {Typography} from 'antd';
 import {useQuery, useMutation, gql} from '@apollo/client';
 import {useParams} from 'react-router-dom';
 
-import logo from '../../images/logo.svg';
 import {useForm} from 'antd/lib/form/Form';
 
 function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
@@ -324,9 +323,7 @@ export default function FormPage() {
     <Layout>
       <Layout.Header
         style={{textAlign: 'center', background: '#fff', padding: 0}}
-      >
-        <img style={{height: '32px'}} src={logo} />
-      </Layout.Header>
+      ></Layout.Header>
       <Layout>
         <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
         <Layout.Content>
