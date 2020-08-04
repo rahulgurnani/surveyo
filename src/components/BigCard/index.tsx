@@ -88,6 +88,7 @@ function BigCard() {
                     questions[index].options = newOptions;
                   }
                   questions[index].order = index;
+                  questions[index].required = true;
                 }
                 var form = {
                   title: surveyTitle,
@@ -133,14 +134,13 @@ function BigCard() {
             <Input />
           </Form.Item> */}
           <Form.Item
-            // label="Username"
+            label="Survey Title"
             // name="username"
             rules={[{required: true}]}
           >
             <Input
               placeholder="Enter your survey title"
               allowClear
-              required={true}
               value={surveyTitle}
               onChange={e => {
                 console.log(e.target.value);

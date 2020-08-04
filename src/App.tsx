@@ -34,6 +34,7 @@ function App() {
             </Row>
           </Route>
           <Route path="/form/:id" children={<GqlForm />} />
+          <Route path="/graphiql" children={<GqlForm />} />
         </Switch>
       </Router>
     </ApolloProvider>
