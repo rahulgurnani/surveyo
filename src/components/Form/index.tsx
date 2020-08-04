@@ -22,6 +22,7 @@ import {useQuery, useMutation, gql} from '@apollo/client';
 import {useParams} from 'react-router-dom';
 
 import logo from '../../images/logo.svg';
+import { useForm } from 'antd/lib/form/Form';
 
 function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
   return arr.map((element, elementIdx) => {
@@ -44,7 +45,7 @@ function SyForm(props: SyFormProps): JSX.Element {
     }),
   });
   console.log(state);
-
+  const [formHook] = useForm();
   const [submitResponse, {loading: loadingResponse}] = useMutation(
     CREATE_RESPONSE
   );
@@ -172,6 +173,7 @@ function SyForm(props: SyFormProps): JSX.Element {
   const createFieldItem = (field: SyField, idx:number): JSX.Element => {
     const required_rules = {
       rules: [{ required: true, message: 'Please enter ' + field.title }],
+      name: field.title
     };
     if (field.required) {
       return (<Form.Item style={{ margin: 0 }} {...required_rules}>
@@ -188,6 +190,10 @@ function SyForm(props: SyFormProps): JSX.Element {
   }
 
   async function handleSubmit() {
+    const values = await formHook.validateFields();
+    
+    console.log("Validate", values);
+    
     try {
       const response = await submitResponse({
         variables: {response: state},
@@ -211,8 +217,7 @@ function SyForm(props: SyFormProps): JSX.Element {
             </Row>
             <Row gutter={[16, 16]}>
               <Col span={24}>
-                  {createFieldItem(field, idx)}
-                
+                  {createFieldItem(field, idx)}            
               </Col>
             </Row>
           </Card>
@@ -223,7 +228,7 @@ function SyForm(props: SyFormProps): JSX.Element {
 
   return (
     <PageHeader ghost={true} title={props.title}>
-      <Form onFinish={handleSubmit}>
+      <Form form={formHook} onFinish={handleSubmit}>
         {fields}
         <Row>
           <Col span={24} style={{textAlign: 'right'}}>
