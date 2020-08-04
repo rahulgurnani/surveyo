@@ -172,9 +172,11 @@ function SyForm(props: SyFormProps): JSX.Element {
 
   const createFieldItem = (field: SyField, idx:number): JSX.Element => {
     const required_rules = {
-      rules: [{ required: true, message: 'Please enter ' + field.title }],
+      rules: [{ required: true, message: 'This field is required' }],
       name: field.title
     };
+    
+    
     if (field.required) {
       return (<Form.Item style={{ margin: 0 }} {...required_rules}>
         {createField(field, idx)}
