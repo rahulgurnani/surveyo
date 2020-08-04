@@ -19,6 +19,7 @@ import 'antd/dist/antd.css';
 import {ApolloProvider} from '@apollo/client';
 import {ApolloClient, InMemoryCache} from '@apollo/client';
 import {error} from 'console';
+import { useForm } from 'antd/lib/form/Form';
 
 const {Meta} = Card;
 
@@ -29,7 +30,8 @@ function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
   const [questionCard, setQuestionCard] = useState('Text');
   const [surveyTitle, setSurveyTitle] = useState('');
-
+  const [formHook] = useForm();
+  
   const CREATE_FORM = gql`
     mutation($form: AddFormInput!) {
       addForm(input: [$form]) {
@@ -62,10 +64,10 @@ function BigCard() {
         return <TextQuestionCard {...params} />;
     }
   };
-
+  
   return (
     <div>
-      <Form>
+      <Form form={formHook}>
         <Card
           cover={<img alt="example" src={header} />}
           actions={[
@@ -78,6 +80,8 @@ function BigCard() {
             />,
             <Button
               onClick={async () => {
+                const values = await formHook.validateFields();
+                console.log("validation "+ values.name);
                 for (let index = 0; index < questions.length; index++) {
                   if ('options' in questions[index]) {
                     let newOptions = questions[index].options.map(
@@ -135,13 +139,11 @@ function BigCard() {
           </Form.Item> */}
           <Form.Item
             label="Survey Title"
-            // name="username"
-            rules={[{required: true}]}
+            name="survey title"
+            rules={[{required: true, message: 'Please input Survey title'}]}
           >
             <Input
               placeholder="Enter your survey title"
-              allowClear
-              value={surveyTitle}
               onChange={e => {
                 console.log(e.target.value);
                 setSurveyTitle(e.target.value);
