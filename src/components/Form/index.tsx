@@ -51,11 +51,13 @@ function SyForm(props: SyFormProps): JSX.Element {
 
   if ((state as any).submitted) {
     return (
-      <Result
-        status="success"
-        title="Thank you!"
-        subTitle="Your response has been recorded."
-      />
+      <Card type="inner">
+        <Result
+          status="success"
+          title="Thank you!"
+          subTitle="Your response has been recorded."
+        />
+      </Card>
     );
   }
 
