@@ -1,32 +1,178 @@
-import React from 'react';
-import { Card, Avatar } from 'antd';
-import { BorderInnerOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import header from '../../images/header.jpg';
-const { Meta } = Card;
+import React, {useState} from 'react';
+import {Card, Avatar, Select, Button, Input, Form} from 'antd';
+import update from 'immutability-helper';
+import {gql, useMutation} from '@apollo/client';
+import {
+  BorderInnerOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+import header from '../../images/banner4.jpg';
+
+import TextQuestionCard from '../TextQuestionCard';
+import DateQuestionCard from '../DateQuestionCard';
+import RatingCard from '../RatingCard';
+import MCQCard from '../MCQCard';
+import DropDown from '../DropDown';
+import 'antd/dist/antd.css';
+
+import {ApolloProvider} from '@apollo/client';
+import {ApolloClient, InMemoryCache} from '@apollo/client';
+import {error} from 'console';
+import { useForm } from 'antd/lib/form/Form';
+
+const {Meta} = Card;
+
+// type BigCardState = {children: []}
+type question = any;
+
 function BigCard() {
-    return (<div>
-      <Card
-    // style={{ width: 300 }}
-    cover={
-      <img
-        alt="example"
-        src={header}
-      />
+  const [questions, setQuestions] = useState<question>([]);
+  const [questionCard, setQuestionCard] = useState('Text');
+  const [surveyTitle, setSurveyTitle] = useState('');
+  const [formHook] = useForm();
+  
+  const CREATE_FORM = gql`
+    mutation($form: AddFormInput!) {
+      addForm(input: [$form]) {
+        form {
+          id
+        }
+      }
     }
-    actions={[
-      <SettingOutlined key="setting" />,
-      <BorderInnerOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
-    ]}
-  >
-    <Meta
-    //   avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-      title="Surveyo"
-      description="Simple App that let's you create your surveys"
-    />
-  </Card>
-      </div>
-    );
+  `;
+
+  const [sendToClient, {loading}] = useMutation(CREATE_FORM);
+
+  const getCard = (i: number) => {
+    const question = questions[i];
+    const params = {
+      question: question,
+      updateQuestion: (question: question) =>
+        setQuestions(update(questions, {$splice: [[i, 1, question]]})),
+      deleteQuestion: () =>
+        setQuestions(update(questions, {$splice: [[i, 1]]})),
+    };
+    switch (question.type) {
+      case 'SingleChoice':
+        return <MCQCard {...params} />;
+      case 'Date':
+        return <DateQuestionCard {...params} />;
+      case 'Rating':
+        return <RatingCard {...params} />;
+      default:
+        return <TextQuestionCard {...params} />;
+    }
+  };
+  
+  return (
+    <div>
+      <Form form={formHook}>
+        <Card
+          cover={<img alt="example" src={header} />}
+          actions={[
+            <DropDown changeCardType={setQuestionCard} />,
+            <BorderInnerOutlined
+              key="edit"
+              onClick={() =>
+                setQuestions(questions.concat({type: questionCard}))
+              }
+            />,
+            <Button
+              onClick={async () => {
+                const values = await formHook.validateFields();
+                console.log("validation "+ values.name);
+                for (let index = 0; index < questions.length; index++) {
+                  if ('options' in questions[index]) {
+                    let newOptions = questions[index].options.map(
+                      (value: any, index: any) => {
+                        return {order: index, title: value};
+                      }
+                    );
+                    questions[index].options = newOptions;
+                  }
+                  questions[index].order = index;
+                  questions[index].required = true;
+                }
+                var form = {
+                  title: surveyTitle,
+                  fields: questions,
+                };
+
+                console.log('Form: ', form);
+
+                try {
+                  var result = await sendToClient({
+                    variables: {
+                      form: form,
+                    },
+                  });
+
+                  console.log(result);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              Create Form
+            </Button>,
+          ]}
+        >
+          <Meta
+            title="Surveyo"
+            description="Simple App that let's you create simple surveys"
+          />
+          <br />
+          <br />
+          <h1>Survey Title</h1>
+
+          {/* <Form.Item
+            name="note"
+            label="Note"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item> */}
+          <Form.Item
+            label="Survey Title"
+            name="survey title"
+            rules={[{required: true, message: 'Please input Survey title'}]}
+          >
+            <Input
+              placeholder="Enter your survey title"
+              onChange={e => {
+                console.log(e.target.value);
+                setSurveyTitle(e.target.value);
+              }}
+            />
+          </Form.Item>
+
+          <br />
+          <br />
+
+          {questions.map((question: question, index: number) => (
+            <div key={index}>
+              <Card>{getCard(index)}</Card>
+              <br />
+              <br />
+            </div>
+          ))}
+          <br />
+          <br />
+        </Card>
+      </Form>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+  );
 }
 
-  export default BigCard;
+export default BigCard;
