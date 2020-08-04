@@ -93,7 +93,6 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
                                   ]}
                                   noStyle
                                 >
-                                  {console.log(field, index)}
                                   <Input
                                     placeholder="Please input option"
                                     style={{width: '60%'}}
@@ -119,7 +118,6 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
                                   style={{margin: '0 8px'}}
                                   onClick={() => {
                                     remove(field.name);
-                                    console.log('field.name: ', field.name);
                                     let newOptions = update(options, {
                                       $splice: [[field.name, 1]],
                                     });

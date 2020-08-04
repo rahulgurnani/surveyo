@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Card, Avatar, Select, Button} from 'antd';
+import {Card, Avatar, Select, Button, Input, Form} from 'antd';
 import update from 'immutability-helper';
 import {gql, useMutation} from '@apollo/client';
 import {
@@ -14,6 +14,7 @@ import DateQuestionCard from '../DateQuestionCard';
 import RatingCard from '../RatingCard';
 import MCQCard from '../MCQCard';
 import DropDown from '../DropDown';
+import 'antd/dist/antd.css';
 
 import {ApolloProvider} from '@apollo/client';
 import {ApolloClient, InMemoryCache} from '@apollo/client';
@@ -27,6 +28,7 @@ type question = any;
 function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
   const [questionCard, setQuestionCard] = useState('Text');
+  const [surveyTitle, setSurveyTitle] = useState('');
 
   const CREATE_FORM = gql`
     mutation($form: AddFormInput!) {
@@ -63,69 +65,104 @@ function BigCard() {
 
   return (
     <div>
-      <Card
-        cover={<img alt="example" src={header} />}
-        actions={[
-          <DropDown changeCardType={setQuestionCard} />,
-          <BorderInnerOutlined
-            key="edit"
-            onClick={() => setQuestions(questions.concat({type: questionCard}))}
-          />,
-          <Button
-            onClick={async () => {
-              for (let index = 0; index < questions.length; index++) {
-                if ('options' in questions[index]) {
-                  let newOptions = questions[index].options.map(
-                    (value: any, index: any) => {
-                      return {order: index, title: value};
-                    }
-                  );
-                  questions[index].options = newOptions;
+      <Form>
+        <Card
+          cover={<img alt="example" src={header} />}
+          actions={[
+            <DropDown changeCardType={setQuestionCard} />,
+            <BorderInnerOutlined
+              key="edit"
+              onClick={() =>
+                setQuestions(questions.concat({type: questionCard}))
+              }
+            />,
+            <Button
+              onClick={async () => {
+                for (let index = 0; index < questions.length; index++) {
+                  if ('options' in questions[index]) {
+                    let newOptions = questions[index].options.map(
+                      (value: any, index: any) => {
+                        return {order: index, title: value};
+                      }
+                    );
+                    questions[index].options = newOptions;
+                  }
+                  questions[index].order = index;
                 }
-                questions[index].order = index;
-              }
-              var form = {
-                title: 'Random',
-                fields: questions,
-              };
+                var form = {
+                  title: surveyTitle,
+                  fields: questions,
+                };
 
-              console.log('Form: ', form);
+                console.log('Form: ', form);
 
-              try {
-                var result = await sendToClient({
-                  variables: {
-                    form: form,
-                  },
-                });
+                try {
+                  var result = await sendToClient({
+                    variables: {
+                      form: form,
+                    },
+                  });
 
-                console.log(result);
-              } catch (error) {
-                console.log(error);
-              }
-            }}
+                  console.log(result);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              Create Form
+            </Button>,
+          ]}
+        >
+          <Meta
+            title="Surveyo"
+            description="Simple App that let's you create simple surveys"
+          />
+          <br />
+          <br />
+          <h1>Survey Title</h1>
+
+          {/* <Form.Item
+            name="note"
+            label="Note"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            {' '}
-            Create Form
-          </Button>,
-        ]}
-      >
-        <Meta
-          title="Surveyo"
-          description="Simple App that let's you create simple surveys"
-        />
-        <br />
-        <br />
+            <Input />
+          </Form.Item> */}
+          <Form.Item
+            // label="Username"
+            // name="username"
+            rules={[{required: true}]}
+          >
+            <Input
+              placeholder="Enter your survey title"
+              allowClear
+              required={true}
+              value={surveyTitle}
+              onChange={e => {
+                console.log(e.target.value);
+                setSurveyTitle(e.target.value);
+              }}
+            />
+          </Form.Item>
 
-        {questions.map((question: question, index: number) => (
-          <div key={index}>
-            <Card>{getCard(index)}</Card>
-            <br />
-            <br />
-          </div>
-        ))}
-        <br />
-        <br />
-      </Card>
+          <br />
+          <br />
+
+          {questions.map((question: question, index: number) => (
+            <div key={index}>
+              <Card>{getCard(index)}</Card>
+              <br />
+              <br />
+            </div>
+          ))}
+          <br />
+          <br />
+        </Card>
+      </Form>
       <br />
       <br />
       <br />
