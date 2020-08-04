@@ -21,8 +21,7 @@ import {Typography} from 'antd';
 import {useQuery, useMutation, gql} from '@apollo/client';
 import {useParams} from 'react-router-dom';
 
-import logo from '../../images/logo.svg';
-import { useForm } from 'antd/lib/form/Form';
+import {useForm} from 'antd/lib/form/Form';
 
 function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
   return arr.map((element, elementIdx) => {
@@ -151,10 +150,16 @@ function SyForm(props: SyFormProps): JSX.Element {
           />
         );
       case 'SingleChoice':
+        const radioStyle = {
+          display: 'block',
+          height: '30px',
+          lineHeight: '30px',
+        };
+
         return (
           <Radio.Group onChange={handleRadioChange(idx)}>
             {field.options.map(option => (
-              <Radio key={option.id} value={option.id}>
+              <Radio key={option.id} value={option.id} style={radioStyle}>
                 {option.title}
               </Radio>
             ))}
@@ -170,32 +175,30 @@ function SyForm(props: SyFormProps): JSX.Element {
     }
   };
 
-  const createFieldItem = (field: SyField, idx:number): JSX.Element => {
+  const createFieldItem = (field: SyField, idx: number): JSX.Element => {
     const required_rules = {
-      rules: [{ required: true, message: 'This field is required' }],
-      name: field.title
+      rules: [{required: true, message: 'This field is required'}],
+      name: field.title,
     };
-    
-    
+
     if (field.required) {
-      return (<Form.Item style={{ margin: 0 }} {...required_rules}>
-        {createField(field, idx)}
-      </Form.Item>
-      );
-    } else {
       return (
-        <Form.Item style={{ margin: 0 }}>
+        <Form.Item style={{margin: 0}} {...required_rules}>
           {createField(field, idx)}
         </Form.Item>
       );
+    } else {
+      return (
+        <Form.Item style={{margin: 0}}>{createField(field, idx)}</Form.Item>
+      );
     }
-  }
+  };
 
   async function handleSubmit() {
     const values = await formHook.validateFields();
-    
-    console.log("Validate", values);
-    
+
+    console.log('Validate', values);
+
     try {
       const response = await submitResponse({
         variables: {response: state},
@@ -218,9 +221,7 @@ function SyForm(props: SyFormProps): JSX.Element {
               </Col>
             </Row>
             <Row gutter={[16, 16]}>
-              <Col span={24}>
-                  {createFieldItem(field, idx)}            
-              </Col>
+              <Col span={24}>{createFieldItem(field, idx)}</Col>
             </Row>
           </Card>
         </Col>
@@ -296,6 +297,7 @@ const GET_FORM = gql`
         id
         title
         type
+        required
         options(order: {asc: order}) {
           id
           title
@@ -321,9 +323,7 @@ export default function FormPage() {
     <Layout>
       <Layout.Header
         style={{textAlign: 'center', background: '#fff', padding: 0}}
-      >
-        <img style={{height: '32px'}} src={logo} />
-      </Layout.Header>
+      ></Layout.Header>
       <Layout>
         <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
         <Layout.Content>

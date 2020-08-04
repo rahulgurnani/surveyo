@@ -114,26 +114,12 @@ function GqlViz() {
           const chart = makeChart(field);
           if (chart) {
             return (
-              <>
-                <Col span={12}>
-                  <Card>
-                    <h3>{field.title}</h3>
-                    {chart}
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card>
-                    <h3>{field.title}</h3>
-                    {chart}
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card>
-                    <h3>{field.title}</h3>
-                    {chart}
-                  </Card>
-                </Col>
-              </>
+              <Col span={12}>
+                <Card>
+                  <h3>{field.title}</h3>
+                  {chart}
+                </Card>
+              </Col>
             );
           }
         })}
