@@ -169,6 +169,24 @@ function SyForm(props: SyFormProps): JSX.Element {
     }
   };
 
+  const createFieldItem = (field: SyField, idx:number): JSX.Element => {
+    const required_rules = {
+      rules: [{ required: true, message: 'Please enter ' + field.title }],
+    };
+    if (field.required) {
+      return (<Form.Item style={{ margin: 0 }} {...required_rules}>
+        {createField(field, idx)}
+      </Form.Item>
+      );
+    } else {
+      return (
+        <Form.Item style={{ margin: 0 }}>
+          {createField(field, idx)}
+        </Form.Item>
+      );
+    }
+  }
+
   async function handleSubmit() {
     try {
       const response = await submitResponse({
@@ -193,9 +211,8 @@ function SyForm(props: SyFormProps): JSX.Element {
             </Row>
             <Row gutter={[16, 16]}>
               <Col span={24}>
-                <Form.Item style={{margin: 0}}>
-                  {createField(field, idx)}
-                </Form.Item>
+                  {createFieldItem(field, idx)}
+                
               </Col>
             </Row>
           </Card>
@@ -255,6 +272,7 @@ type SyFieldText = SyFieldBase & {
 type SyFieldBase = {
   id: string;
   title: string;
+  required: boolean;
 };
 
 type SyFieldOptions = {
