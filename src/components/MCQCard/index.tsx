@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Form, Input, Button, Radio, Card, Row, Col} from 'antd';
+import update from 'immutability-helper';
 import {
   MinusCircleOutlined,
   PlusOutlined,
@@ -37,9 +38,6 @@ const rowC = {
 // display:flex; flex-direction:row;
 function MCQCard({question, updateQuestion, deleteQuestion}: any) {
   const options = question.options || [];
-
-  console.log('Question: ', question);
-  console.log(question.options);
   return (
     <div>
       <Card
@@ -60,7 +58,11 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
         />
         <br />
         <br />
-        <Form name="dynamic_form_item" {...formItemLayoutWithOutLabel}>
+        <Form
+          // form={form}
+          name="dynamic_form_item"
+          {...formItemLayoutWithOutLabel}
+        >
           <Form.List name="names">
             {(fields, {add, remove}) => {
               return (
@@ -91,6 +93,7 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
                                   ]}
                                   noStyle
                                 >
+                                  {console.log(field, index)}
                                   <Input
                                     placeholder="Please input option"
                                     style={{width: '60%'}}
@@ -116,6 +119,18 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
                                   style={{margin: '0 8px'}}
                                   onClick={() => {
                                     remove(field.name);
+                                    console.log('field.name: ', field.name);
+                                    let newOptions = update(options, {
+                                      $splice: [[field.name, 1]],
+                                    });
+                                    // update(questions, {$splice: [[i, 1, question]]})
+
+                                    // newOptions[index] = e.target.value;
+                                    // fields = newOptions;
+                                    updateQuestion({
+                                      ...question,
+                                      options: newOptions,
+                                    });
                                   }}
                                 />
                               ) : null}
@@ -134,7 +149,6 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
                           ...question,
                           options: [...options, ''],
                         });
-                        fields = options;
                       }}
                       style={{width: '60%'}}
                     >

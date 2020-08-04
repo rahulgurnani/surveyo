@@ -10,13 +10,14 @@ import {
 import header from '../../images/banner4.jpg';
 
 import TextQuestionCard from '../TextQuestionCard';
+import DateQuestionCard from '../DateQuestionCard';
+import RatingCard from '../RatingCard';
 import MCQCard from '../MCQCard';
 import DropDown from '../DropDown';
 
-import { ApolloProvider } from '@apollo/client';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { error } from 'console';
-
+import {ApolloProvider} from '@apollo/client';
+import {ApolloClient, InMemoryCache} from '@apollo/client';
+import {error} from 'console';
 
 const {Meta} = Card;
 
@@ -26,7 +27,6 @@ type question = any;
 function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
   const [questionCard, setQuestionCard] = useState('Text');
-
 
   const CREATE_FORM = gql`
     mutation($form: AddFormInput!) {
@@ -52,6 +52,10 @@ function BigCard() {
     switch (question.type) {
       case 'SingleChoice':
         return <MCQCard {...params} />;
+      case 'Date':
+        return <DateQuestionCard {...params} />;
+      case 'Rating':
+        return <RatingCard {...params} />;
       default:
         return <TextQuestionCard {...params} />;
     }
@@ -67,40 +71,42 @@ function BigCard() {
             key="edit"
             onClick={() => setQuestions(questions.concat({type: questionCard}))}
           />,
-          <Button onClick={async () => {
-            for (let index = 0; index < questions.length; index++) {
-              if ('options' in questions[index]) {
-                let newOptions = questions[index].options.map(
-                  (value: any, index: any) => {
-                    return {order: index, title: value};
-                  }
-                );
-                questions[index].options = newOptions;
+          <Button
+            onClick={async () => {
+              for (let index = 0; index < questions.length; index++) {
+                if ('options' in questions[index]) {
+                  let newOptions = questions[index].options.map(
+                    (value: any, index: any) => {
+                      return {order: index, title: value};
+                    }
+                  );
+                  questions[index].options = newOptions;
+                }
+                questions[index].order = index;
               }
-              questions[index].order = index;
-            }
-            var form = {
-              title: "Random",
-              fields: questions
-            };
-            
-            console.log("Form: ", form);
+              var form = {
+                title: 'Random',
+                fields: questions,
+              };
 
-            try {
-              var result = await sendToClient(
-                {
+              console.log('Form: ', form);
+
+              try {
+                var result = await sendToClient({
                   variables: {
-                    form: form
-                  }
+                    form: form,
+                  },
                 });
-                
-              console.log(result);
-            } catch(error) {
-              console.log(error);
-            }
-            
 
-          }}> Create Form</Button>,
+                console.log(result);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            {' '}
+            Create Form
+          </Button>,
         ]}
       >
         <Meta

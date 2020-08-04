@@ -14,6 +14,8 @@ function DropDown(props: any) {
       >
         <Option value="Text">Short Answer</Option>
         <Option value="SingleChoice">Multiple Choice</Option>
+        <Option value="Date">Date</Option>
+        <Option value="Rating">Rating</Option>
         {/* <Option value="date">Date</Option> */}
       </Select>
     </div>
