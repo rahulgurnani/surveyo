@@ -4,6 +4,7 @@ import './App.css';
 import 'antd/dist/antd.css';
 import './index.css';
 import BigCard from './components/BigCard';
+import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Viz';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -30,7 +31,7 @@ function App() {
           </Route>
           <Route path="/form/:id" children={<FormPage />} />
           <Route path="/viz/:id" children={<VizPage />} />
-          <Route path="/graphiql" children={<GqlForm />} />
+          <Route path="/graphiql" children={<GraphiqlCard />} />
         </Switch>
       </Router>
     </ApolloProvider>
