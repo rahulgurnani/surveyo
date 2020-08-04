@@ -32,6 +32,16 @@ function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
   });
 }
 
+function SyFormFieldTitle(props: any) {
+  const title = [props.title];
+
+  if (props.required) {
+    title.push(<span style={{color: 'red'}}> *</span>);
+  }
+
+  return <p style={{margin: 0, color: 'black', fontSize: '16px'}}>{title}</p>;
+}
+
 function SyForm(props: SyFormProps): JSX.Element {
   const [state, setState] = useState({
     form: {id: props.id},
@@ -217,7 +227,10 @@ function SyForm(props: SyFormProps): JSX.Element {
           <Card key={idx} type="inner" style={{borderRadius: '4px'}}>
             <Row gutter={[16, 16]}>
               <Col span={24}>
-                <Card.Meta style={{margin: 0}} title={field.title} />
+                <SyFormFieldTitle
+                  title={field.title}
+                  required={field.required}
+                />
               </Col>
             </Row>
             <Row gutter={[16, 16]}>
@@ -322,7 +335,7 @@ export default function FormPage() {
   return (
     <Layout>
       <Layout.Header
-        style={{textAlign: 'center', background: '#fff', padding: 0}}
+        style={{textAlign: 'center', background: 'white', padding: 0}}
       ></Layout.Header>
       <Layout>
         <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
@@ -331,10 +344,8 @@ export default function FormPage() {
         </Layout.Content>
         <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
       </Layout>
-      <Layout.Footer>
-        <Typography.Paragraph style={{textAlign: 'center'}}>
-          Copyright &copy; Surveyo. All rights reserved.
-        </Typography.Paragraph>
+      <Layout.Footer style={{textAlign: 'center', background: 'white'}}>
+        Copyright &copy; Surveyo. All rights reserved.
       </Layout.Footer>
     </Layout>
   );
@@ -375,6 +386,14 @@ function GqlForm() {
 
   if (error) {
     return <Alert message={error.message} type="warning" />;
+  }
+
+  if (data.getForm === null) {
+    return (
+      <Card title>
+        <Alert message="We couldn't find that form" type="warning" />
+      </Card>
+    );
   }
 
   return <SyForm {...data.getForm} />;

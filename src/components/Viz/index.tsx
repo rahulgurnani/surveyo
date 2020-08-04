@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import {useQuery, gql} from '@apollo/client';
 import {Alert, Card, Row, Col} from 'antd';
 import {Layout} from 'antd';
+import ReactWordcloud from 'react-wordcloud';
 
 import {Bar, Doughnut} from 'react-chartjs-2';
 
@@ -68,6 +69,7 @@ const GET_THINGS = gql`
           singleChoice {
             title
           }
+          text
         }
       }
     }
@@ -95,6 +97,16 @@ function GqlViz() {
 
   const makeChart = (field: any) => {
     switch (field.type) {
+      case 'Text':
+        return (
+          <ReactWordcloud
+            options={{
+              rotations: 1,
+              rotationAngles: [0, 0],
+            }}
+            words={chartWordcloud(field) as any}
+          />
+        );
       case 'SingleChoice':
         return <Doughnut data={chartSingleChoice(field) as any} />;
       case 'Rating':
@@ -126,6 +138,21 @@ function GqlViz() {
       </Row>
     </>
   );
+}
+
+function chartWordcloud(field: any) {
+  const count = counter(
+    field.entries.flatMap((entry: any) => entry.text.split(/\s+/))
+  );
+
+  const x = Object.entries(count).map(([text, value]) => ({
+    text,
+    value,
+  }));
+
+  console.log(x);
+
+  return x;
 }
 
 function chartRating(field: any) {
