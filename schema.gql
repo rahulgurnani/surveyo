@@ -1,19 +1,22 @@
 type Form {
     id: ID!
-    title: String!
+    title: String! @search(by: [hash])
     fields: [Field!]!
-    responses: [Response!]
+    responses: [Response!] @hasInverse(field: form)
+    creator: User!
 }
 
 type Field {
     id: ID!
     order: Int!
     type: FieldType!
-    entries: [Entry!]
-    title: String!
+    entries: [Entry!] @hasInverse(field: field)
+    title: String! @search(by: [hash])
     options: [FieldOption!]
+   required: Boolean!
     count: Int
 }
+
 
 enum FieldType {
     Date
@@ -25,22 +28,29 @@ enum FieldType {
 type FieldOption {
     id: ID!
     order: Int!
-    title: String!
+    title: String! @search(by: [hash])
 }
 
 type Response {
     id: ID!
-    form: Form! @hasInverse(field: responses)
-    entries: [Entry!]! @hasInverse(field: response)
+    form: Form!
+    entries: [Entry!]!
 }
 
 type Entry {
     id: ID!
-    response: Response!
-    field: Field! @hasInverse(field: entries)
+    field: Field!
 
     date: DateTime
     rating: Int
     singleChoice: FieldOption
     text: String
+}
+
+
+type User {
+    id: ID!
+    email: String! @id @search(by: [hash])
+    name: String
+    forms: [Form] @hasInverse(field: creator)
 }
