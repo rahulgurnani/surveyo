@@ -13,13 +13,10 @@ import TextQuestionCard from '../TextQuestionCard';
 import DateQuestionCard from '../DateQuestionCard';
 import RatingCard from '../RatingCard';
 import MCQCard from '../MCQCard';
-import DropDown from '../DropDown';
 import 'antd/dist/antd.css';
 
-import {ApolloProvider} from '@apollo/client';
-import {ApolloClient, InMemoryCache} from '@apollo/client';
-import {error} from 'console';
 import {useForm} from 'antd/lib/form/Form';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const {Meta} = Card;
 
@@ -112,6 +109,9 @@ function BigCard() {
                 var form = {
                   title: surveyTitle,
                   fields: questions,
+                  creator: {
+                    email: user.email
+                  }
                 };
 
                 console.log('Form: ', form);

@@ -7,21 +7,21 @@ import {
     InMemoryCache,
   } from '@apollo/client';
 
-  
-function createApolloClient(token)  {
+import config from './server_config.json';
+
+function createApolloClient(getIdTokenClaims)  {
+
     const httpLink = createHttpLink({
-      uri: "https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql",
-      // options: {
-      //   reconnect: true,
-      // },
+      uri: config.graphqlEndpoint,
     });
   
-    const authLink = setContext((request, { headers }) => {
+    const authLink = setContext( async (request, { headers }) => {
+      const idTokenClaims = await getIdTokenClaims();
       // return the header to the context so httpLink can read them
       return {
         headers: {
           ...headers,
-          "X-Auth-Token": token,
+          "X-Auth-Token": idTokenClaims.__raw,
         },
       };
     });
@@ -35,7 +35,6 @@ function createApolloClient(token)  {
 
 export default createApolloClient;
 export function onRedirectCallback(appState) {
-    console.log("onRedirectCallback");
     history.push(
       appState && appState.targetUrl
         ? appState.targetUrl

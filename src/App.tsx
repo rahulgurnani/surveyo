@@ -13,14 +13,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  useQuery,
-  gql,
-  ApolloLink,
-} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client';
 import createApolloClient from './apollo_config';
 
 
@@ -30,21 +23,16 @@ function App() {
     user,
     isAuthenticated,
     isLoading,
+    getIdTokenClaims,
     loginWithRedirect,
     getAccessTokenSilently,
     logout
   } = useAuth0();
-  // const { isLoading, error } = useAuth0();
 
-  // if (error) {
-  //   return <div>Oops... {error.message}</div>;
-  // }
-
-  // if (isLoading) {
-  //   // TODO(rahul): add a loading component
-  // }
-  console.log(isAuthenticated);
-  const client = createApolloClient(user);
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("User", user);
+  
+  const client = createApolloClient(getIdTokenClaims);
   return (isLoading) ?
     (<div>
       <Spin></Spin>
@@ -77,7 +65,7 @@ function App() {
       )
       :
       <Button
-          onClick={() => getAccessTokenSilently().then((token: String) => { console.log("authenticated ", token) }).catch((error: Error) =>  { console.log(error); loginWithRedirect();})}
+          onClick={() => loginWithRedirect()}
         >
           Log in
     </Button>
