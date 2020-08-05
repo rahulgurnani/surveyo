@@ -4,9 +4,9 @@ import {Row, Col, DatePicker, Layout} from 'antd';
 
 import 'graphiql/graphiql.css';
 
+import config from '../../server_config.json';
+const URL = config.graphqlEndpoint;
 const {Header, Footer, Sider, Content} = Layout;
-
-const URL = 'https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql';
 
 const queryPanel = {
   width: '80%',
