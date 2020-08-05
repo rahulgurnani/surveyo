@@ -75,10 +75,6 @@ function BigCard() {
   );
 
   if (formSubmitted) {
-    {
-      console.log(formURL);
-    }
-
     return (
       <Card type="inner">
         <Result
@@ -180,7 +176,6 @@ function BigCard() {
               <Input
                 placeholder="Enter your survey title"
                 onChange={e => {
-                  console.log(e.target.value);
                   setSurveyTitle(e.target.value);
                 }}
               />

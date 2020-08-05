@@ -53,7 +53,6 @@ function SyForm(props: SyFormProps): JSX.Element {
       };
     }),
   });
-  console.log(state);
   const [formHook] = useForm();
   const [submitResponse, {loading: loadingResponse}] = useMutation(
     CREATE_RESPONSE
