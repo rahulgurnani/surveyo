@@ -121,7 +121,7 @@ function BigCard() {
                   var form = {
                     title: surveyTitle,
                     fields: questions,
-                    creator: user.email
+                    creator: { email: user.email }
                   };
 
                   console.log('Form: ', form);
