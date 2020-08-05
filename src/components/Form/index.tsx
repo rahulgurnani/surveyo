@@ -333,19 +333,11 @@ const CREATE_RESPONSE = gql`
 export default function FormPage() {
   return (
     <Layout>
-      <Layout.Header
-        style={{textAlign: 'center', background: 'white', padding: 0}}
-      ></Layout.Header>
-      <Layout>
-        <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
-        <Layout.Content>
-          <GqlForm />
-        </Layout.Content>
-        <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
-      </Layout>
-      <Layout.Footer style={{textAlign: 'center', background: 'white'}}>
-        Copyright &copy; Surveyo. All rights reserved.
-      </Layout.Footer>
+      <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
+      <Layout.Content>
+        <GqlForm />
+      </Layout.Content>
+      <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
     </Layout>
   );
 }

@@ -1,5 +1,4 @@
 body {
-    font: 12px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
     color: #ccd1e6;
     background: #dce1e1;
 }
@@ -55,7 +54,6 @@ body {
 }
 
 .quote {
-    font-family: Georgia, serif;
     font-size: 14px;
 }
 
