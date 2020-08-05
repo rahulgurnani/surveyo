@@ -10,11 +10,16 @@ import {
 import config from './server_config.json';
 
 function createApolloClient(getIdTokenClaims)  {
-
+  if(getIdTokenClaims == null) {
+    return new ApolloClient({
+        uri: config.graphqlEndpoint,
+        cache: new InMemoryCache()
+      });
+    }
     const httpLink = createHttpLink({
       uri: config.graphqlEndpoint,
     });
-  
+    
     const authLink = setContext( async (request, { headers }) => {
       const idTokenClaims = await getIdTokenClaims();
       // return the header to the context so httpLink can read them

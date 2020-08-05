@@ -71,14 +71,13 @@ function App() {
   console.log("isAuthenticated", isAuthenticated);
   console.log("User", user);
   
-  const client = createApolloClient(getIdTokenClaims);
   return (isLoading) ?
     (<div>
       <Spin></Spin>
     </div>) :
     (isAuthenticated) ?
        (
-      <ApolloProvider client={client}>
+      <ApolloProvider client={createApolloClient(getIdTokenClaims)}>
         <Router>
           <Layout>
             <Layout.Header style={{background: 'white'}}>
@@ -120,11 +119,36 @@ function App() {
       </ApolloProvider>
     )
       :
-      <Button
-          onClick={() => loginWithRedirect()}
-        >
-          Log in
-    </Button>
+      <ApolloProvider client={createApolloClient(null)}>
+        <Router>
+            <Layout>
+              <Layout.Header style={{background: 'white'}}>
+                <SyMenu />
+              </Layout.Header>
+
+              <Switch>
+                <Route exact path="/">
+                <Button
+                    onClick={() => loginWithRedirect()}>
+                        Log in
+                  </Button>
+                </Route>
+                <Route path="/form/:id" children={<FormPage />} />
+              </Switch>
+            </Layout>
+    
+            <Layout.Footer
+              style={{
+                background: 'white',
+                bottom: '0',
+                width: '100%',
+                textAlign: 'center',
+              }}
+            >
+              Copyright &copy; Surveyo. All rights reserved.
+            </Layout.Footer>
+          </Router>
+        </ApolloProvider>
 }
 
 function Home() {
