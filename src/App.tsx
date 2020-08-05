@@ -27,15 +27,17 @@ import {LineChartOutlined, FormOutlined, CodeOutlined} from '@ant-design/icons';
 
 import {useQuery, useMutation, gql} from '@apollo/client';
 
-const CREATE_USER = gql`mutation($user: AddUserInput!) {
-  addUser(input:[$user]) {
-    user {
-      id
+const CREATE_USER = gql`
+  mutation($user: AddUserInput!) {
+    addUser(input: [$user]) {
+      user {
+        id
+      }
     }
   }
-}`;
+`;
 
-function SyMenu() {
+function SyMenu(isAuthenticated: Boolean) {
   return (
     <>
       <div style={{float: 'left'}}>
@@ -60,6 +62,15 @@ function SyMenu() {
           <LineChartOutlined style={{paddingRight: '5px'}} />
           Viz
         </NavLink>
+
+        {isAuthenticated ? (
+          <Button
+            ghost
+            style={{color: '#000000', borderColor: '#000000', margin: '10px'}}
+          >
+            Logout
+          </Button>
+        ) : null}
       </div>
     </>
   );
@@ -88,7 +99,7 @@ function App() {
       <Router>
         <Layout>
           <Layout.Header style={{background: 'white'}}>
-            <SyMenu />
+            {SyMenu(isAuthenticated as Boolean)}
           </Layout.Header>
 
           <Switch>
@@ -130,7 +141,7 @@ function App() {
       <Router>
         <Layout>
           <Layout.Header style={{background: 'white'}}>
-            <SyMenu />
+            {SyMenu(isAuthenticated as Boolean)}
           </Layout.Header>
           <Switch>
             <Route exact path="/">
@@ -157,11 +168,11 @@ function App() {
 
 function Home() {
   const [createUser, {loading: loadingResponse}] = useMutation(CREATE_USER);
-  const {
-    user
-  } = useAuth0();
+  const {user} = useAuth0();
   //const user = {"email": "rahul@dgraph.com", "name": "Rahul Gurnani"};
-  createUser({variables: {user: user}}).then((response) => console.log("Success", response)).catch((error) => console.error(error));
+  createUser({variables: {user: user}})
+    .then(response => console.log('Success', response))
+    .catch(error => console.error(error));
   return (
     <Layout.Content
       style={{

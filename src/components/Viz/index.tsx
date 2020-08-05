@@ -43,21 +43,15 @@ function TextBox(text: any) {
 
 export default function VizPage() {
   return (
-    <>
-      <Layout>
-        <Layout.Header>header</Layout.Header>
-        <Layout>
-          <Layout.Sider breakpoint="md" collapsedWidth={1} />
-          <Layout.Content>
-            <Card>
-              <GqlViz />
-            </Card>
-          </Layout.Content>
-          <Layout.Sider breakpoint="md" collapsedWidth={1} />
-        </Layout>
-        <Layout.Footer>footer</Layout.Footer>
-      </Layout>
-    </>
+    <Layout>
+      <Layout.Sider breakpoint="md" collapsedWidth={1} />
+      <Layout.Content>
+        <Card>
+          <GqlViz />
+        </Card>
+      </Layout.Content>
+      <Layout.Sider breakpoint="md" collapsedWidth={1} />
+    </Layout>
   );
 }
 

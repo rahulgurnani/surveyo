@@ -35,7 +35,7 @@ export default function Viz2() {
   }
 
   console.log(data);
-  const tableData = data.getUser.forms;
+  const tableData = data.getUser?.forms || [];
   const tableCols = [
     {
       title: 'Title',
