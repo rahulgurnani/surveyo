@@ -1,14 +1,14 @@
+import React, {Component} from 'react';
+import {Row, Col, Button, Spin} from 'antd';
+import './App.css';
+import 'antd/dist/antd.css';
+
 import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Viz';
 import Viz2 from './components/Viz2';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
-
-import React from 'react';
-import logo from './logo.svg';
-
-import {Layout, Menu, Button, Row, Col, Typography} from 'antd';
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,13 +16,14 @@ import {
   Link,
   NavLink,
 } from 'react-router-dom';
+import {useAuth0} from '@auth0/auth0-react';
+import createApolloClient from './apollo_config';
+
+import logo from './logo.svg';
+
+import {Layout, Menu, Typography} from 'antd';
 
 import {LineChartOutlined, FormOutlined, CodeOutlined} from '@ant-design/icons';
-
-const client = new ApolloClient({
-  uri: 'https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql',
-  cache: new InMemoryCache(),
-});
 
 function SyMenu() {
   return (
@@ -55,8 +56,25 @@ function SyMenu() {
 }
 
 function App() {
-  return (
-    <ApolloProvider client={client}>
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    getIdTokenClaims,
+    loginWithRedirect,
+    getAccessTokenSilently,
+    logout,
+  } = useAuth0();
+
+  console.log('isAuthenticated', isAuthenticated);
+  console.log('User', user);
+
+  return isLoading ? (
+    <div>
+      <Spin></Spin>
+    </div>
+  ) : isAuthenticated ? (
+    <ApolloProvider client={createApolloClient(getIdTokenClaims)}>
       <Router>
         <Layout>
           <Layout.Header style={{background: 'white'}}>
@@ -82,6 +100,33 @@ function App() {
             <Route exact path="/viz" children={<Viz2 />} />
             <Route exact path="/viz/:id/charts" children={<VizPage />} />
             <Route exact path="/viz/:id/graphiql" children={<GraphiqlCard />} />
+          </Switch>
+        </Layout>
+
+        <Layout.Footer
+          style={{
+            background: 'white',
+            bottom: '0',
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          Copyright &copy; Surveyo. All rights reserved.
+        </Layout.Footer>
+      </Router>
+    </ApolloProvider>
+  ) : (
+    <ApolloProvider client={createApolloClient(null)}>
+      <Router>
+        <Layout>
+          <Layout.Header style={{background: 'white'}}>
+            <SyMenu />
+          </Layout.Header>
+          <Switch>
+            <Route exact path="/">
+              <Button onClick={() => loginWithRedirect()}>Log in</Button>
+            </Route>
+            <Route path="/form/:id" children={<FormPage />} />
           </Switch>
         </Layout>
 

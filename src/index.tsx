@@ -5,11 +5,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { Auth0Provider } from '@auth0/auth0-react';
+import config from "./auth_config.json";
+import onRedirectCallback from "./apollo_config";
 
 ReactDOM.render(
+  <Auth0Provider
+  domain={config.domain}
+  clientId={config.clientId}
+  audience={config.audience}
+  redirectUri={window.location.origin}
+  onRedirectCallback={onRedirectCallback}>
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Auth0Provider>,
   document.getElementById('root')
 );
 

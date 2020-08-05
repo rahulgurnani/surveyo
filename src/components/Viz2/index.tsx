@@ -1,66 +1,77 @@
 import React from 'react';
 
-import {Table, Tooltip, Space} from 'antd';
+import {Alert, Card, Table, Tooltip, Space} from 'antd';
 import {LineChartOutlined, CodeOutlined, LinkOutlined} from '@ant-design/icons';
+import {gql, useQuery} from '@apollo/client';
+import {useAuth0} from '@auth0/auth0-react';
 
-const columns = [
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
-    render: (text: any) => <a>{text}</a>,
-  },
-  {
-    title: 'Responses',
-    dataIndex: 'responses',
-    key: 'responses',
-  },
-  {
-    title: 'Actions',
-    key: 'action',
-    render: (text: any, record: any) => (
-      <Space size="middle">
-        <Tooltip title="Open form">
-          <a href={`/form/${record.id}`}>
-            <LinkOutlined />
-          </a>
-        </Tooltip>
-        <Tooltip title="Visualizations">
-          <a href={`/viz/${record.id}/charts`}>
-            <LineChartOutlined />
-          </a>
-        </Tooltip>
-        <Tooltip title="GraphiQL">
-          <a href={`/viz/${record.id}/graphiql`}>
-            <CodeOutlined />
-          </a>
-        </Tooltip>
-      </Space>
-    ),
-  },
-];
-
-const data = [
-  {
-    key: '1',
-    id: '0x9d',
-    title: 'John Brown',
-    responses: 32,
-  },
-  {
-    key: '2',
-    id: '0x9d',
-    title: 'Jim Green',
-    responses: 42,
-  },
-  {
-    key: '3',
-    id: '0x9d',
-    title: 'Joe Black',
-    responses: 32,
-  },
-];
+const GET_SURVEYS = gql`
+  query($email: String!) {
+    getUser(email: $email) {
+      forms {
+        id
+        title
+      }
+    }
+  }
+`;
 
 export default function Viz2() {
-  return <Table columns={columns} dataSource={data} />;
+  const {user} = useAuth0();
+
+  const {loading, error, data} = useQuery(GET_SURVEYS, {
+    variables: {
+      email: user.email,
+    },
+  });
+
+  if (loading) {
+    return <Card loading />;
+  }
+
+  if (error) {
+    console.log(error);
+    return <Alert message={error.message} type="warning" />;
+  }
+
+  console.log(data);
+  const tableData = data.getUser.forms;
+  const tableCols = [
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+      render: (text: any) => <a>{text}</a>,
+    },
+    {
+      title: 'Responses',
+      dataIndex: 'responses',
+      key: 'responses',
+    },
+    {
+      title: 'Actions',
+      key: 'action',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <Tooltip title="Open form">
+            <a href={`/form/${record.id}`} target="_blank">
+              <LinkOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Visualizations">
+            <a href={`/viz/${record.id}/charts`} target="_blank">
+              <LineChartOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="GraphiQL">
+            <a href={`/viz/${record.id}/graphiql`} target="_blank">
+              <CodeOutlined />
+            </a>
+          </Tooltip>
+        </Space>
+      ),
+    },
+  ];
+
+  return <Table columns={tableCols} dataSource={tableData} />;
 }

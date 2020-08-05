@@ -19,6 +19,7 @@ import {ApolloProvider} from '@apollo/client';
 import {ApolloClient, InMemoryCache} from '@apollo/client';
 import {error} from 'console';
 import {useForm} from 'antd/lib/form/Form';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const {Meta} = Card;
 const {Link} = Anchor;
@@ -31,7 +32,7 @@ function BigCard() {
   const [formURL, setFormURL] = useState('');
   const [surveyTitle, setSurveyTitle] = useState('');
   const [formHook] = useForm();
-
+  const {user} = useAuth0();
   const CREATE_FORM = gql`
     mutation($form: AddFormInput!) {
       addForm(input: [$form]) {
@@ -120,6 +121,7 @@ function BigCard() {
                   var form = {
                     title: surveyTitle,
                     fields: questions,
+                    creator: user.email
                   };
 
                   console.log('Form: ', form);
