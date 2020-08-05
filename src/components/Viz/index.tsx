@@ -4,8 +4,42 @@ import {useQuery, gql} from '@apollo/client';
 import {Alert, Card, Row, Col} from 'antd';
 import {Layout} from 'antd';
 import ReactWordcloud from 'react-wordcloud';
-
+import diggy from '../../images/diggy.png';
+import './index.css';
 import {Bar, Doughnut} from 'react-chartjs-2';
+const {Meta} = Card;
+function TextBox(text: any) {
+  return (
+    <div>
+      <Row>
+        <Col>
+          <Card
+            hoverable
+            style={{width: 200}}
+            cover={<img alt="example" src={diggy} />}
+          >
+            <Meta title="Hello everyone!" />
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <div className="notepaper">
+              <figure className="quote">
+                <blockquote
+                  className="curly-quotes"
+                  cite="https://www.youtube.com/watch?v=qYLrc9hy0t0"
+                >
+                  {text.text.substring(0, 120)}
+                </blockquote>
+                <figcaption className="quote-by">— Anonymous</figcaption>
+              </figure>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+}
 
 export default function VizPage() {
   return (
@@ -96,21 +130,28 @@ function GqlViz() {
   }
 
   const makeChart = (field: any) => {
-    switch (field.type) {
-      case 'Text':
-        return (
-          <ReactWordcloud
-            options={{
-              rotations: 1,
-              rotationAngles: [0, 0],
-            }}
-            words={chartWordcloud(field) as any}
-          />
-        );
-      case 'SingleChoice':
-        return <Doughnut data={chartSingleChoice(field) as any} />;
-      case 'Rating':
-        return <Bar data={chartRating(field) as any} />;
+    let str_pos = field.title.indexOf('Diggy');
+    if (str_pos > -1) {
+      let count_max = field.entries.length;
+      let index = Math.floor(Math.random() * Math.floor(count_max));
+      return <TextBox text={field.entries[index].text}></TextBox>;
+    } else {
+      switch (field.type) {
+        case 'Text':
+          return (
+            <ReactWordcloud
+              options={{
+                rotations: 1,
+                rotationAngles: [0, 0],
+              }}
+              words={chartWordcloud(field) as any}
+            />
+          );
+        case 'SingleChoice':
+          return <Doughnut data={chartSingleChoice(field) as any} />;
+        case 'Rating':
+          return <Bar data={chartRating(field) as any} />;
+      }
     }
   };
 
@@ -141,8 +182,15 @@ function GqlViz() {
 }
 
 function chartWordcloud(field: any) {
+  // console.log('field entries: ', field.entries);
+
+  // field.entries.text = remove_stopwords(field.entries.text);
+  // console.log('New field entries: ', field.entries);
   const count = counter(
-    field.entries.flatMap((entry: any) => entry.text.split(/\s+/))
+    field.entries.flatMap((entry: any) => {
+      let text = remove_stopwords(entry.text);
+      return text.split(/\s+/);
+    })
   );
 
   const x = Object.entries(count).map(([text, value]) => ({
@@ -278,3 +326,147 @@ function counter(arr: string[]) {
 
   return count;
 }
+function remove_stopwords(str: string) {
+  let stri = str || '';
+  let res = [];
+  let words = stri.split(' ');
+  for (let i = 0; i < words.length; i++) {
+    let word_clean = words[i].split('.').join('');
+    word_clean = word_clean.toLowerCase();
+    if (!stopwords.includes(word_clean)) {
+      res.push(word_clean);
+    }
+  }
+  return res.join(' ');
+}
+
+const stopwords = [
+  'The',
+  'i',
+  'me',
+  'my',
+  'myself',
+  'we',
+  'our',
+  'ours',
+  'ourselves',
+  'you',
+  'your',
+  'yours',
+  'yourself',
+  'yourselves',
+  'he',
+  'him',
+  'his',
+  'himself',
+  'she',
+  'her',
+  'hers',
+  'herself',
+  'it',
+  'its',
+  'itself',
+  'they',
+  'them',
+  'their',
+  'theirs',
+  'themselves',
+  'what',
+  'which',
+  'who',
+  'whom',
+  'this',
+  'that',
+  'these',
+  'those',
+  'am',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'have',
+  'has',
+  'had',
+  'having',
+  'do',
+  'does',
+  'did',
+  'doing',
+  'a',
+  'an',
+  'the',
+  'and',
+  'but',
+  'if',
+  'or',
+  'because',
+  'as',
+  'until',
+  'while',
+  'of',
+  'at',
+  'by',
+  'for',
+  'with',
+  'about',
+  'against',
+  'between',
+  'into',
+  'through',
+  'during',
+  'before',
+  'after',
+  'above',
+  'below',
+  'to',
+  'from',
+  'up',
+  'down',
+  'in',
+  'out',
+  'on',
+  'off',
+  'over',
+  'under',
+  'again',
+  'further',
+  'then',
+  'once',
+  'here',
+  'there',
+  'when',
+  'where',
+  'why',
+  'how',
+  'all',
+  'any',
+  'both',
+  'each',
+  'few',
+  'more',
+  'most',
+  'other',
+  'some',
+  'such',
+  'no',
+  'nor',
+  'not',
+  'only',
+  'own',
+  'same',
+  'so',
+  'than',
+  'too',
+  'very',
+  's',
+  't',
+  'can',
+  'will',
+  'just',
+  'don',
+  'should',
+  'now',
+];

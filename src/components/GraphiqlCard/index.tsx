@@ -6,7 +6,7 @@ import 'graphiql/graphiql.css';
 
 const {Header, Footer, Sider, Content} = Layout;
 
-const URL = 'https://play.dgraph.io/graphql';
+const URL = 'https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql';
 
 const queryPanel = {
   width: '80%',

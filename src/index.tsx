@@ -1,16 +1,14 @@
+import 'antd/dist/antd.css';
+import './App.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from '@auth0/auth0-react';
 import config from "./auth_config.json";
 import onRedirectCallback from "./apollo_config";
 
-
-/* A function that routes the user to the right place after login */
-
-//// onRedirectCallback={}>
 ReactDOM.render(
   <Auth0Provider
   domain={config.domain}
