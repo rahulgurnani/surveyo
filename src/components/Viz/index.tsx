@@ -141,8 +141,9 @@ function GqlViz() {
           return (
             <ReactWordcloud
               options={{
-                rotations: 1,
-                rotationAngles: [0, 0],
+                // rotations: 1,
+                rotationAngles: [0, 90],
+                fontSizes: [20, 50],
               }}
               words={chartWordcloud(field) as any}
             />
@@ -189,6 +190,7 @@ function chartWordcloud(field: any) {
   const count = counter(
     field.entries.flatMap((entry: any) => {
       let text = remove_stopwords(entry.text);
+      text = text.substring(0, 120);
       return text.split(/\s+/);
     })
   );
