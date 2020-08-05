@@ -5,6 +5,14 @@ type Form {
     responses: [Response!] @hasInverse(field: form)
     creator: User!
 }
+type Form {
+    id: ID!
+    title: String! @search(by: [hash])
+    fields: [Field!]!
+    responses: [Response!] @hasInverse(field: form)
+    creator: User!
+}
+
 
 type Field {
     id: ID!
@@ -31,8 +39,16 @@ type FieldOption {
     title: String! @search(by: [hash])
 }
 
-type Response {
-    id: ID!
+type Response @auth(
+    query: { rule: """
+        query ($USER: String!) { 
+            queryForm {
+                creator(filter: { email: { eq: $USER } } ) { 
+                    email
+                } 
+            } 
+        }"""
+}) {    id: ID!
     form: Form!
     entries: [Entry!]!
 }
@@ -54,3 +70,5 @@ type User {
     name: String
     forms: [Form] @hasInverse(field: creator)
 }
+
+# Dgraph.Authorization X-Auth-Token https://dgraph.io/jwt/claims RS256 "-----BEGIN CERTIFICATE-----\nMIIDDTCCAfWgAwIBAgIJA/jx0qLqIXBjMA0GCSqGSIb3DQEBCwUAMCQxIjAgBgNV\nBAMTGWRldi1tMnVhbmpucS51cy5hdXRoMC5jb20wHhcNMjAwODAxMTI0MTU5WhcN\nMzQwNDEwMTI0MTU5WjAkMSIwIAYDVQQDExlkZXYtbTJ1YW5qbnEudXMuYXV0aDAu\nY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsVic6D2j0wUerAAn\nR3YfbSP9sCv4Lkk6r8CWRY8HapjFea0zRmNXVf0q9Em+Jwawe6bm4rya/5/qrwe9\nBKMA3+d7pmtC5qADZxH2GoV0qtH9vZWro//NtyYZ+mTXf/3GNouItmQ09p3Msb8j\niYyxsl/0GhHDcful7VJ7+hEhcNjcHUrc4E8vJ88JfHPVhmZPBDM0T3yeSgbFi1n2\nma+x9Guhtm7T3jOtAIflD7AA11j0H4poO8hgn3lU2CKydUJ1VPtpJu5YyIT6kPh0\nyqDUhn59tKE5hxlPW9kceSsMWYQO+8hai04aXSLk3A67gmTMS8IlvkeFrC4zgZSs\n65sLpwIDAQABo0IwQDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRryhzz5MkO\nJNULiiNn1DwbAm5QnzAOBgNVHQ8BAf8EBAMCAoQwDQYJKoZIhvcNAQELBQADggEB\nAFtw2f43ur2+vJw11nGPDDziv5lrbZo1wGNPaFQaeKZiTvkDWIFAMIVk/OJRSt0k\nfbe3KMs/s05tj08sEPoLfQKbEWwoR6l51SR8Log4Gy05xwtGar2pWtpZvNAoKlu8\nmAgFFlnGOsNSKxHyiwlZhR8a5nSN9qL/UppJe6OXRazXBndN1rX78DYFU03io+A6\noSn1jiPCa4v2ED0lLOWTeL+msA87Rty4s9hH0KAGWCDl+u6006+2TD771nUcEY9X\nKKyNbv0lOFrmbkpNghokT6I6X37PURvOWPIiLcCSe9g7uYFAQRadZJX0rRtZyuYJ\ngaoYSDdQ9jb4iXfZnZmVBPQ=\n-----END CERTIFICATE-----"
