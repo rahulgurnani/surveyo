@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import GraphiQL from 'graphiql';
-import {Row, Col, Select, DatePicker} from 'antd';
+import {Row, Col, DatePicker, Layout} from 'antd';
 
 import 'graphiql/graphiql.css';
+
+const {Header, Footer, Sider, Content} = Layout;
 
 const URL = 'https://play.dgraph.io/graphql';
 
@@ -29,12 +31,22 @@ function GraphiqlCard({question, updateQuestion, deleteQuestion}: any) {
 
   return (
     <div>
-      {/* <Col span={24}> */}
-      <GraphiQL
-        fetcher={graphQLFetcher}
-        query={query}
-        onEditQuery={(q: any) => setQuery(q)}
-      />
+      <Layout style={{height: '100vh'}}>
+        <Header style={{backgroundColor: 'white'}}>
+          <h1>Query your survey data using GraphiQL</h1>
+        </Header>
+        <Row style={{height: '100vh'}}>
+          <Col span={4}></Col>
+          <Col span={16}>
+            <GraphiQL
+              fetcher={graphQLFetcher}
+              query={query}
+              onEditQuery={(q: any) => setQuery(q)}
+            />
+          </Col>
+          <Col span={4}></Col>
+        </Row>
+      </Layout>
       {/* </Col> */}
     </div>
   );
