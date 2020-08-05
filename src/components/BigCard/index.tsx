@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Card, Menu, Select, Button, Input, Form, Dropdown} from 'antd';
+import {Card, Menu, Result, Button, Input, Form, Dropdown} from 'antd';
 import update from 'immutability-helper';
 import {gql, useMutation} from '@apollo/client';
 import {
@@ -28,7 +28,7 @@ type question = any;
 
 function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
-  const [questionCard, setQuestionCard] = useState('Text');
+  const [formSubmitted, setFormSubmitState] = useState(false);
   const [surveyTitle, setSurveyTitle] = useState('');
   const [formHook] = useForm();
 
@@ -73,75 +73,79 @@ function BigCard() {
     </Menu>
   );
 
-  return (
-    <div>
-      <Form form={formHook}>
-        <Card
-          cover={<img alt="example" src={header} />}
-          actions={[
-            <Dropdown overlay={menu}>
-              <Button>
-                Add Question <DownOutlined />
-              </Button>
-            </Dropdown>,
-            // <DropDown changeCardType={setQuestionCard} />,
-            // <BorderInnerOutlined
-            //   key="edit"
-            //   onClick={() =>
-            //     setQuestions(questions.concat({type: questionCard}))
-            //   }
-            // />,
-            <Button
-              onClick={async () => {
-                const values = await formHook.validateFields();
-                console.log('validation ' + values.name);
-                for (let index = 0; index < questions.length; index++) {
-                  if ('options' in questions[index]) {
-                    let newOptions = questions[index].options.map(
-                      (value: any, index: any) => {
-                        return {order: index, title: value};
-                      }
-                    );
-                    questions[index].options = newOptions;
+  if (formSubmitted) {
+    return (
+      <Card type="inner">
+        <Result
+          status="success"
+          title="Thank you!"
+          subTitle="Your response has been recorded."
+        />
+      </Card>
+    );
+  } else
+    return (
+      <div>
+        <Form form={formHook}>
+          <Card
+            cover={<img alt="example" src={header} />}
+            actions={[
+              <Dropdown overlay={menu}>
+                <Button>
+                  Add Question <DownOutlined />
+                </Button>
+              </Dropdown>,
+              <Button
+                onClick={async () => {
+                  const values = await formHook.validateFields();
+                  console.log('validation ' + values.name);
+                  for (let index = 0; index < questions.length; index++) {
+                    if ('options' in questions[index]) {
+                      let newOptions = questions[index].options.map(
+                        (value: any, index: any) => {
+                          return {order: index, title: value};
+                        }
+                      );
+                      questions[index].options = newOptions;
+                    }
+                    questions[index].order = index;
+                    if (!('required' in questions[index])) {
+                      questions[index].required = false;
+                    }
                   }
-                  questions[index].order = index;
-                  if (!('required' in questions[index])) {
-                    questions[index].required = false;
+                  var form = {
+                    title: surveyTitle,
+                    fields: questions,
+                  };
+
+                  console.log('Form: ', form);
+
+                  try {
+                    var result = await sendToClient({
+                      variables: {
+                        form: form,
+                      },
+                    });
+
+                    console.log(result);
+                  } catch (error) {
+                    console.log(error);
                   }
-                }
-                var form = {
-                  title: surveyTitle,
-                  fields: questions,
-                };
+                }}
+              >
+                Create Form
+              </Button>,
+            ]}
+          >
+            <Meta
+              title="Surveyo"
+              description="Simple App that let's you create simple surveys"
+            />
+            <br />
+            <br />
+            {/* <h1>Survey Title</h1> */}
 
-                console.log('Form: ', form);
-
-                try {
-                  var result = await sendToClient({
-                    variables: {
-                      form: form,
-                    },
-                  });
-
-                  console.log(result);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              Create Form
-            </Button>,
-          ]}
-        >
-          <Meta
-            title="Surveyo"
-            description="Simple App that let's you create simple surveys"
-          />
-          <br />
-          <br />
-          {/* <h1>Survey Title</h1> */}
-
-          {/* <Form.Item
+            {/* <Form.Item
             name="note"
             label="Note"
             rules={[
@@ -152,42 +156,42 @@ function BigCard() {
           >
             <Input />
           </Form.Item> */}
-          <Form.Item
-            label="Survey Title"
-            name="survey title"
-            rules={[{required: true, message: 'Please input Survey title'}]}
-          >
-            <Input
-              placeholder="Enter your survey title"
-              onChange={e => {
-                console.log(e.target.value);
-                setSurveyTitle(e.target.value);
-              }}
-            />
-          </Form.Item>
+            <Form.Item
+              label="Survey Title"
+              name="survey title"
+              rules={[{required: true, message: 'Please input Survey title'}]}
+            >
+              <Input
+                placeholder="Enter your survey title"
+                onChange={e => {
+                  console.log(e.target.value);
+                  setSurveyTitle(e.target.value);
+                }}
+              />
+            </Form.Item>
 
-          <br />
-          <br />
+            <br />
+            <br />
 
-          {questions.map((question: question, index: number) => (
-            <div key={index}>
-              <Card>{getCard(index)}</Card>
-              <br />
-              <br />
-            </div>
-          ))}
-          <br />
-          <br />
-        </Card>
-      </Form>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-    </div>
-  );
+            {questions.map((question: question, index: number) => (
+              <div key={index}>
+                <Card>{getCard(index)}</Card>
+                <br />
+                <br />
+              </div>
+            ))}
+            <br />
+            <br />
+          </Card>
+        </Form>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+      </div>
+    );
 }
 
 export default BigCard;
