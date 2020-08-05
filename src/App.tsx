@@ -19,6 +19,16 @@ import {Layout, Menu, Typography} from 'antd';
 
 import {LineChartOutlined, FormOutlined, CodeOutlined} from '@ant-design/icons';
 
+import {useQuery, useMutation, gql} from '@apollo/client';
+
+const CREATE_USER = gql`mutation($user: AddUserInput!) {
+  addUser(input:[$user]) {
+    user {
+      id
+    }
+  }
+}`;
+
 function SyMenu() {
   return (
     <>
@@ -152,6 +162,12 @@ function App() {
 }
 
 function Home() {
+  const [createUser, {loading: loadingResponse}] = useMutation(CREATE_USER);
+  const {
+    user
+  } = useAuth0();
+  //const user = {"email": "rahul@dgraph.com", "name": "Rahul Gurnani"};
+  createUser({variables: {user: user}}).then((response) => console.log("Success", response)).catch((error) => console.error(error));
   return (
     <Layout.Content
       style={{
