@@ -2,6 +2,7 @@ import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Viz';
+import Viz2 from './components/Viz2';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 import React from 'react';
@@ -48,14 +49,6 @@ function SyMenu() {
           <LineChartOutlined style={{paddingRight: '5px'}} />
           Viz
         </NavLink>
-        <NavLink
-          to="/graphiql"
-          activeStyle={{color: '#1890ff'}}
-          style={{color: '#000000', padding: '10px'}}
-        >
-          <CodeOutlined style={{paddingRight: '5px'}} />
-          GraphiQL
-        </NavLink>
       </div>
     </>
   );
@@ -85,9 +78,10 @@ function App() {
                 </Row>
               </Layout.Content>
             </Route>
-            <Route path="/form/:id" children={<FormPage />} />
-            <Route path="/viz/:id" children={<VizPage />} />
-            <Route path="/graphiql" children={<GraphiqlCard />} />
+            <Route exact path="/form/:id" children={<FormPage />} />
+            <Route exact path="/viz" children={<Viz2 />} />
+            <Route exact path="/viz/:id/charts" children={<VizPage />} />
+            <Route exact path="/viz/:id/graphiql" children={<GraphiqlCard />} />
           </Switch>
         </Layout>
 
