@@ -11,6 +11,9 @@ const GET_SURVEYS = gql`
       forms {
         id
         title
+        responses {
+          id
+        }
       }
     }
   }
@@ -41,12 +44,13 @@ export default function Viz2() {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
-      render: (text: any) => <a>{text}</a>,
+      render: (text: any) => text,
     },
     {
       title: 'Responses',
       dataIndex: 'responses',
       key: 'responses',
+      render: (text: any, record: any) => record.responses?.length || 0,
     },
     {
       title: 'Actions',
@@ -73,5 +77,5 @@ export default function Viz2() {
     },
   ];
 
-  return <Table columns={tableCols} dataSource={tableData} />;
+  return <Table columns={tableCols as any} dataSource={tableData} />;
 }
