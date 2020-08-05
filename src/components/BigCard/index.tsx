@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Card, Menu, Result, Button, Input, Form, Dropdown} from 'antd';
+import {Card, Menu, Result, Button, Input, Form, Dropdown, Anchor} from 'antd';
 import update from 'immutability-helper';
 import {gql, useMutation} from '@apollo/client';
 import {
@@ -22,13 +22,14 @@ import {error} from 'console';
 import {useForm} from 'antd/lib/form/Form';
 
 const {Meta} = Card;
-
+const {Link} = Anchor;
 // type BigCardState = {children: []}
 type question = any;
 
 function BigCard() {
   const [questions, setQuestions] = useState<question>([]);
   const [formSubmitted, setFormSubmitState] = useState(false);
+  const [formURL, setFormURL] = useState('');
   const [surveyTitle, setSurveyTitle] = useState('');
   const [formHook] = useForm();
 
@@ -74,12 +75,20 @@ function BigCard() {
   );
 
   if (formSubmitted) {
+    {
+      console.log(formURL);
+    }
+
     return (
       <Card type="inner">
         <Result
           status="success"
           title="Thank you!"
-          subTitle="Your response has been recorded."
+          subTitle={
+            <Anchor>
+              <Link href={formURL} title="Your form is live." />
+            </Anchor>
+          }
         />
       </Card>
     );
@@ -128,6 +137,13 @@ function BigCard() {
                     });
 
                     console.log(result);
+                    let id = result.data.addForm.form[0].id;
+                    let url =
+                      window.location.href.replace('/creator', '') +
+                      '/form/' +
+                      id;
+                    setFormURL(url);
+                    setFormSubmitState(true);
                   } catch (error) {
                     console.log(error);
                   }

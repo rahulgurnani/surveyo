@@ -11,7 +11,7 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'https://fleet-ray-2002.us-west-2.aws.cloud.dgraph.io/graphql',
+  uri: 'https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql',
   cache: new InMemoryCache(),
 });
 
