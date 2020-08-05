@@ -3,20 +3,15 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Spin } from 'antd';
 import './App.css';
 import 'antd/dist/antd.css';
-import './index.css';
+
 import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Viz';
-import GqlForm from './components/Form';
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
-import createAuth0Client from "@auth0/auth0-spa-js";
 import { useAuth0 } from "@auth0/auth0-react";
-
 import createApolloClient from './apollo_config';
-
-
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client';
 
 import logo from './logo.svg';
 
