@@ -20,6 +20,8 @@ import {useAuth0} from '@auth0/auth0-react';
 import createApolloClient from './apollo_config';
 
 import logo from './logo.svg';
+  uri: 'https://surveyo.us-west-2.aws.cloud.dgraph.io/graphql',
+//  uri: 'https://fleet-ray-2002.us-west-2.aws.cloud.dgraph.io/graphql',
 
 import {Layout, Menu, Typography} from 'antd';
 
