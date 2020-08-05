@@ -38,6 +38,10 @@ const CREATE_USER = gql`
 `;
 
 function SyMenu(isAuthenticated: Boolean) {
+  const {
+    logout,
+  } = useAuth0();
+  
   return (
     <>
       <div style={{float: 'left'}}>
@@ -65,8 +69,12 @@ function SyMenu(isAuthenticated: Boolean) {
 
         {isAuthenticated ? (
           <Button
+            onClick={() => logout({
+              returnTo: window.location.origin,
+            })}
             ghost
-            style={{color: '#000000', borderColor: '#000000', margin: '10px'}}
+            style={{color: '#000000', borderColor: '#000000', margin: '10px'
+          }}
           >
             Logout
           </Button>
