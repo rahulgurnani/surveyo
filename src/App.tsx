@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Row, Col, Button, Spin} from 'antd';
 import './App.css';
 import 'antd/dist/antd.css';
@@ -8,7 +8,7 @@ import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Viz';
 import Viz2 from './components/Viz2';
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client';
 import {
   BrowserRouter as Router,
   Switch,
@@ -21,11 +21,11 @@ import createApolloClient from './apollo_config';
 
 import logo from './logo.svg';
 
-import {Layout, Menu, Typography} from 'antd';
+import {Layout, Typography} from 'antd';
 
-import {LineChartOutlined, FormOutlined, CodeOutlined} from '@ant-design/icons';
+import {LineChartOutlined, FormOutlined} from '@ant-design/icons';
 
-import {useQuery, useMutation, gql} from '@apollo/client';
+import {useMutation, gql} from '@apollo/client';
 
 const CREATE_USER = gql`
   mutation($user: AddUserInput!) {
@@ -91,8 +91,6 @@ function App() {
     isLoading,
     getIdTokenClaims,
     loginWithRedirect,
-    getAccessTokenSilently,
-    logout,
   } = useAuth0();
 
   console.log('isAuthenticated', isAuthenticated);
@@ -153,7 +151,18 @@ function App() {
           </Layout.Header>
           <Switch>
             <Route exact path="/">
-              <Button onClick={() => loginWithRedirect()}>Log in</Button>
+            <Layout.Content
+            style={{
+              background: 'white',
+              height: '80vh',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <Button type="primary" size="large" onClick={() => loginWithRedirect()}>Log in</Button>
+            </Layout.Content>
             </Route>
             <Route path="/form/:id" children={<FormPage />} />
           </Switch>
