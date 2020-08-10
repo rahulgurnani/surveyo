@@ -100,7 +100,7 @@ function BigCard() {
                   Add Question <DownOutlined />
                 </Button>
               </Dropdown>,
-              <Button
+              <Button type="primary"
                 onClick={async () => {
                   const values = await formHook.validateFields();
                   console.log('validation ' + values.name);
