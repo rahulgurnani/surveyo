@@ -135,9 +135,8 @@ function GqlViz() {
           return (
             <ReactWordcloud
               options={{
-                // rotations: 1,
-                rotationAngles: [0, 90],
-                fontSizes: [20, 50],
+                  rotations: 2,
+                  rotationAngles: [-90, 0],
               }}
               words={chartWordcloud(field) as any}
             />
