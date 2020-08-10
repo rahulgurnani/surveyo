@@ -84,28 +84,12 @@ function SyMenu(isAuthenticated: Boolean) {
   );
 }
 
-function App() {
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    getIdTokenClaims,
-    loginWithRedirect,
-  } = useAuth0();
-
-  console.log('isAuthenticated', isAuthenticated);
-  console.log('User', user);
-
-  return isLoading ? (
-    <div>
-      <Spin></Spin>
-    </div>
-  ) : isAuthenticated ? (
-    <ApolloProvider client={createApolloClient(getIdTokenClaims)}>
-      <Router>
+function RoutedApp() {
+  return (
+    <Router>
         <Layout>
           <Layout.Header style={{background: 'white'}}>
-            {SyMenu(isAuthenticated as Boolean)}
+            {SyMenu(true)}
           </Layout.Header>
 
           <Switch>
@@ -141,6 +125,29 @@ function App() {
           Copyright &copy; Surveyo. All rights reserved.
         </Layout.Footer>
       </Router>
+  );
+}
+
+function App() {
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    getIdTokenClaims,
+    loginWithRedirect,
+  } = useAuth0();
+
+  console.log('isAuthenticated', isAuthenticated);
+  console.log('User', user);
+
+  // TODO(rahul): Check if user.email_verified
+  return isLoading ? (
+    <div>
+      <Spin></Spin>
+    </div>
+  ) : isAuthenticated ? (
+    <ApolloProvider client={createApolloClient(getIdTokenClaims)}>
+      <RoutedApp/>
     </ApolloProvider>
   ) : (
     <ApolloProvider client={createApolloClient(null)}>
@@ -162,6 +169,13 @@ function App() {
               alignItems: 'center',
             }}>
               <Button type="primary" size="large" onClick={() => loginWithRedirect()}>Log in</Button>
+              <br></br>
+              <Button type="primary" size="large" onClick={() =>  
+                loginWithRedirect({ 
+                  screen_hint: "signup", 
+                  })}>
+                  Sign up
+              </Button>
             </Layout.Content>
             </Route>
             <Route path="/form/:id" children={<FormPage />} />
@@ -184,12 +198,7 @@ function App() {
 }
 
 function Home() {
-  const [createUser, {loading: loadingResponse}] = useMutation(CREATE_USER);
-  const {user} = useAuth0();
-  //const user = {"email": "rahul@dgraph.com", "name": "Rahul Gurnani"};
-  createUser({variables: {user: user}})
-    .then(response => console.log('Success', response))
-    .catch(error => console.error(error));
+  
   return (
     <Layout.Content
       style={{
@@ -200,8 +209,7 @@ function Home() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-      }}
-    >
+      }}>
       <img src={logo} />
       <Typography.Title level={3}>Surveys, simplified.</Typography.Title>
       <Link to="/creator">
