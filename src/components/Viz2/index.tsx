@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Alert, Card, Table, Tooltip, Space} from 'antd';
-import {LineChartOutlined, CodeOutlined, LinkOutlined} from '@ant-design/icons';
+import {LineChartOutlined, CodeOutlined, ExportOutlined} from '@ant-design/icons';
 import {gql, useQuery} from '@apollo/client';
 import {useAuth0} from '@auth0/auth0-react';
 
@@ -59,7 +59,7 @@ export default function Viz2() {
         <Space size="middle">
           <Tooltip title="Open form">
             <a href={`/form/${record.id}`} target="_blank">
-              <LinkOutlined />
+              <ExportOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Visualizations">
