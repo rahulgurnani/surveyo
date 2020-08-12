@@ -10,6 +10,7 @@ type Field {
     id: ID!
     order: Int!
     type: FieldType!
+    form: Form! @hasInverse(field: fields)
     entries: [Entry!] @hasInverse(field: field)
     title: String! @search(by: [hash])
     options: [FieldOption!]
