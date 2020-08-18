@@ -120,11 +120,6 @@ function App() {
 }
 
 function Home() {
-  const [createUser, { loading: loadingResponse }] = useMutation(CREATE_USER);
-  const { user } = useAuth0();
-  createUser({ variables: { user: user } })
-    .then(response => console.log('Success', response))
-    .catch(error => console.error(error));
   return (
     <Layout.Content
       style={{
@@ -135,8 +130,7 @@ function Home() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-      }}
-    >
+      }}>
       <img src={logo} />
       <Typography.Title level={3}>Surveys, simplified.</Typography.Title>
       <Link to="/create">
