@@ -1,9 +1,15 @@
 import React from 'react';
 
-import {Alert, Card, Table, Tooltip, Space} from 'antd';
-import {LineChartOutlined, CodeOutlined, ExportOutlined} from '@ant-design/icons';
+import {Alert, Card, Table, Tooltip, Space, PageHeader, Button} from 'antd';
+import {
+  LineChartOutlined,
+  CodeOutlined,
+  ExportOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import {gql, useQuery} from '@apollo/client';
 import {useAuth0} from '@auth0/auth0-react';
+import {Link} from 'react-router-dom';
 
 const GET_SURVEYS = gql`
   query($email: String!) {
@@ -19,7 +25,25 @@ const GET_SURVEYS = gql`
   }
 `;
 
-export default function Viz2() {
+export default function Dashboard() {
+  return (
+    <PageHeader
+      ghost={true}
+      title="Dashboard"
+      extra={[
+        <Link to="/create">
+          <Button icon={<PlusOutlined />} type="primary">
+            New survey
+          </Button>
+        </Link>,
+      ]}
+    >
+      <DashboardHelper />
+    </PageHeader>
+  );
+}
+
+function DashboardHelper() {
   const {user} = useAuth0();
 
   const {loading, error, data} = useQuery(GET_SURVEYS, {
@@ -62,13 +86,13 @@ export default function Viz2() {
               <ExportOutlined />
             </a>
           </Tooltip>
-          <Tooltip title="Visualizations">
-            <a href={`/viz/${record.id}/charts`} target="_blank">
+          <Tooltip title="Charts">
+            <a href={`charts/${record.id}`}>
               <LineChartOutlined />
             </a>
           </Tooltip>
           <Tooltip title="GraphiQL">
-            <a href={`/viz/${record.id}/graphiql`} target="_blank">
+            <a href={`/graphiql/${record.id}`}>
               <CodeOutlined />
             </a>
           </Tooltip>

@@ -8,18 +8,21 @@ import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from '@auth0/auth0-react';
 import config from "./auth_config.json";
 import onRedirectCallback from "./apollo_config";
+import { BrowserRouter as Router } from "react-router-dom";
 
 ReactDOM.render(
-  <Auth0Provider
-  domain={config.domain}
-  clientId={config.clientId}
-  audience={config.audience}
-  redirectUri={window.location.origin}
-  onRedirectCallback={onRedirectCallback}>
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
-  </Auth0Provider>,
+    <Auth0Provider
+      domain={config.domain}
+      clientId={config.clientId}
+      audience={config.audience}
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}>
+      <Router>
+        <App />
+      </Router>
+    </Auth0Provider>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 

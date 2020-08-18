@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   Button,
@@ -9,19 +9,17 @@ import {
   DatePicker,
   Radio,
   Rate,
-  Layout,
   Row,
   PageHeader,
   Col,
   message,
 } from 'antd';
 
-import {Typography} from 'antd';
 
-import {useQuery, useMutation, gql} from '@apollo/client';
-import {useParams} from 'react-router-dom';
+import { useQuery, useMutation, gql } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 
-import {useForm} from 'antd/lib/form/Form';
+import { useForm } from 'antd/lib/form/Form';
 
 function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
   return arr.map((element, elementIdx) => {
@@ -33,18 +31,15 @@ function replaceAt<T>(arr: T[], idx: number, func: (element: T) => T): T[] {
 }
 
 function SyFormFieldTitle(props: any) {
-  const title = [props.title];
-
-  if (props.required) {
-    title.push(<span style={{color: 'red'}}> *</span>);
-  }
-
-  return <p style={{margin: 0, color: 'black', fontSize: '16px'}}>{title}</p>;
+  return <p style={{ margin: 0, color: 'black', fontSize: '16px' }}>
+    {props.title}
+    {props.required ? <span style={{ color: 'red' }}> *</span> : null}
+  </p>;
 }
 
 function SyForm(props: SyFormProps): JSX.Element {
   const [state, setState] = useState({
-    form: {id: props.id},
+    form: { id: props.id },
     entries: props.fields.map(field => {
       return {
         field: {
@@ -54,7 +49,7 @@ function SyForm(props: SyFormProps): JSX.Element {
     }),
   });
   const [formHook] = useForm();
-  const [submitResponse, {loading: loadingResponse}] = useMutation(
+  const [submitResponse, { loading: loadingResponse }] = useMutation(
     CREATE_RESPONSE
   );
 
@@ -186,19 +181,19 @@ function SyForm(props: SyFormProps): JSX.Element {
 
   const createFieldItem = (field: SyField, idx: number): JSX.Element => {
     const required_rules = {
-      rules: [{required: true, message: 'This field is required'}],
+      rules: [{ required: true, message: 'This field is required' }],
       name: field.title,
     };
 
     if (field.required) {
       return (
-        <Form.Item style={{margin: 0}} {...required_rules}>
+        <Form.Item style={{ margin: 0 }} {...required_rules}>
           {createField(field, idx)}
         </Form.Item>
       );
     } else {
       return (
-        <Form.Item style={{margin: 0}}>{createField(field, idx)}</Form.Item>
+        <Form.Item style={{ margin: 0 }}>{createField(field, idx)}</Form.Item>
       );
     }
   };
@@ -210,9 +205,9 @@ function SyForm(props: SyFormProps): JSX.Element {
 
     try {
       const response = await submitResponse({
-        variables: {response: state},
+        variables: { response: state },
       });
-      setState({submitted: true} as any);
+      setState({ submitted: true } as any);
       console.log(response);
     } catch (e) {
       message.error(`${e}`);
@@ -221,9 +216,9 @@ function SyForm(props: SyFormProps): JSX.Element {
 
   const fields = props.fields.map((field, idx) => {
     return (
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} key={field.id}>
         <Col span={24}>
-          <Card key={idx} type="inner" style={{borderRadius: '4px'}}>
+          <Card key={idx} type="inner" style={{ borderRadius: '4px' }}>
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <SyFormFieldTitle
@@ -246,7 +241,7 @@ function SyForm(props: SyFormProps): JSX.Element {
       <Form form={formHook} onFinish={handleSubmit}>
         {fields}
         <Row>
-          <Col span={24} style={{textAlign: 'right'}}>
+          <Col span={24} style={{ textAlign: 'right' }}>
             <Form.Item>
               <Button
                 htmlType="submit"
@@ -331,22 +326,14 @@ const CREATE_RESPONSE = gql`
 `;
 
 export default function FormPage() {
-  return (
-    <Layout>
-      <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
-      <Layout.Content>
-        <GqlForm />
-      </Layout.Content>
-      <Layout.Sider theme="light" breakpoint="md" collapsedWidth={1} />
-    </Layout>
-  );
+  return <GqlForm />;
 }
 
 function GqlForm() {
-  const {id} = useParams();
+  const { id } = useParams();
 
-  const {loading, error, data} = useQuery(GET_FORM, {
-    variables: {id},
+  const { loading, error, data } = useQuery(GET_FORM, {
+    variables: { id },
   });
 
   if (loading) {
@@ -376,13 +363,13 @@ function GqlForm() {
   }
 
   if (error) {
-    return <Alert message={error.message} type="warning" />;
+    return <Alert message={error.message} type="error" />;
   }
 
   if (data.getForm === null) {
     return (
       <Card title>
-        <Alert message="We couldn't find that form" type="warning" />
+        <Alert message="We couldn't find that form." type="warning" />
       </Card>
     );
   }

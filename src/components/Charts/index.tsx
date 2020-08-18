@@ -1,88 +1,22 @@
 import React from 'react';
 import {useParams} from 'react-router-dom';
 import {useQuery, gql} from '@apollo/client';
-import {Alert, Card, Row, Col} from 'antd';
-import {Layout} from 'antd';
+import {Alert, Card, Row, Col, PageHeader} from 'antd';
 import ReactWordcloud from 'react-wordcloud';
-import diggy from '../../images/diggy.png';
 import './index.css';
 import {Bar, Doughnut} from 'react-chartjs-2';
-const {Meta} = Card;
-function TextBox(text: any) {
-  return (
-    <div>
-      <Row>
-        <Col>
-          <Card
-            hoverable
-            style={{width: 200}}
-            cover={<img alt="example" src={diggy} />}
-          >
-            <Meta title="Hello everyone!" />
-          </Card>
-        </Col>
-        <Col>
-          <Card>
-            <div className="notepaper">
-              <figure className="quote">
-                <blockquote
-                  className="curly-quotes"
-                  cite="https://www.youtube.com/watch?v=qYLrc9hy0t0"
-                >
-                  {text.text.substring(0, 120)}
-                </blockquote>
-                <figcaption className="quote-by">— Anonymous</figcaption>
-              </figure>
-            </div>
-          </Card>
-        </Col>
-      </Row>
-    </div>
-  );
-}
 
 export default function VizPage() {
   return (
-    <Layout>
-      <Layout.Sider breakpoint="md" collapsedWidth={1} />
-      <Layout.Content>
-        <Card>
-          <GqlViz />
-        </Card>
-      </Layout.Content>
-      <Layout.Sider breakpoint="md" collapsedWidth={1} />
-    </Layout>
+    <PageHeader
+      ghost={true}
+      onBack={() => (window.location.href = '/')}
+      title="Charts"
+    >
+      <GqlViz />
+    </PageHeader>
   );
 }
-
-function GenerateCsv(id: string) {
-  const {loading, error, data} = useQuery(GET_THINGS, {
-    variables: {id},
-  });
-}
-
-const GET_CSV = gql`
-  query($id: ID!) {
-    getForm(id: $id) {
-      title
-      fields(order: {asc: order}) {
-        type
-        title
-        entries {
-          response {
-            id
-          }
-          date
-          rating
-          singleChoice {
-            title
-          }
-          text
-        }
-      }
-    }
-  }
-`;
 
 const GET_THINGS = gql`
   query($id: ID!) {
@@ -124,19 +58,13 @@ function GqlViz() {
   }
 
   const makeChart = (field: any) => {
-    let str_pos = field.title.indexOf('Diggy');
-    if (str_pos > -1) {
-      let count_max = field.entries.length;
-      let index = Math.floor(Math.random() * Math.floor(count_max));
-      return <TextBox text={field.entries[index].text}></TextBox>;
-    } else {
       switch (field.type) {
         case 'Text':
           return (
             <ReactWordcloud
               options={{
-                  rotations: 2,
-                  rotationAngles: [-90, 0],
+                rotations: 2,
+                rotationAngles: [-90, 0],
               }}
               words={chartWordcloud(field) as any}
             />
@@ -145,33 +73,25 @@ function GqlViz() {
           return <Doughnut data={chartSingleChoice(field) as any} />;
         case 'Rating':
           return <Bar data={chartRating(field) as any} />;
-      }
     }
   };
 
-  console.log('AAAH', data);
-
   return (
-    <>
-      <Row>
-        <h2>Visualizations</h2>
-      </Row>
-      <Row gutter={[16, 16]}>
-        {data.getForm.fields.map((field: any) => {
-          const chart = makeChart(field);
-          if (chart) {
-            return (
-              <Col span={12}>
-                <Card>
-                  <h3>{field.title}</h3>
-                  {chart}
-                </Card>
-              </Col>
-            );
-          }
-        })}
-      </Row>
-    </>
+    <Row gutter={[16, 16]}>
+      {data.getForm.fields.map((field: any) => {
+        const chart = makeChart(field);
+        if (chart) {
+          return (
+            <Col span={12}>
+              <Card>
+                <h3>{field.title}</h3>
+                {chart}
+              </Card>
+            </Col>
+          );
+        }
+      })}
+    </Row>
   );
 }
 

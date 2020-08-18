@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Form, Input, Button, Radio, Card, Row, Col, Checkbox} from 'antd';
 import update from 'immutability-helper';
 import {
@@ -30,12 +30,6 @@ const radioStyle = {
   lineHeight: '30px',
 };
 
-const rowC = {
-  display: 'flex',
-  flexDirection: 'row',
-};
-
-// display:flex; flex-direction:row;
 function MCQCard({question, updateQuestion, deleteQuestion}: any) {
   const options = question.options || [];
   return (
@@ -56,7 +50,6 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
           value={question.title}
           onChange={e => updateQuestion({...question, title: e.target.value})}
         />
-        <br></br>
         <Checkbox
           onChange={e =>
             updateQuestion({...question, required: e.target.checked})
@@ -64,8 +57,6 @@ function MCQCard({question, updateQuestion, deleteQuestion}: any) {
         >
           Want this to be a required field
         </Checkbox>
-        <br />
-        <br />
         <Form
           // form={form}
           name="dynamic_form_item"

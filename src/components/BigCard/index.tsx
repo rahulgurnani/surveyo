@@ -1,29 +1,27 @@
 import React, {useState} from 'react';
-import {Card, Menu, Result, Button, Input, Form, Dropdown, Anchor} from 'antd';
+import {
+  Card,
+  Menu,
+  Result,
+  Button,
+  Input,
+  Form,
+  Dropdown,
+  Anchor,
+  PageHeader,
+} from 'antd';
 import update from 'immutability-helper';
 import {gql, useMutation} from '@apollo/client';
-import {
-  BorderInnerOutlined,
-  QuestionCircleOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
-import header from '../../images/banner4.jpg';
+import {DownOutlined} from '@ant-design/icons';
 
 import TextQuestionCard from '../TextQuestionCard';
 import DateQuestionCard from '../DateQuestionCard';
 import RatingCard from '../RatingCard';
 import MCQCard from '../MCQCard';
-import DropDown from '../DropDown';
 
-import {ApolloProvider} from '@apollo/client';
-import {ApolloClient, InMemoryCache} from '@apollo/client';
-import {error} from 'console';
 import {useForm} from 'antd/lib/form/Form';
-import { useAuth0 } from "@auth0/auth0-react";
+import {useAuth0} from '@auth0/auth0-react';
 
-const {Meta} = Card;
-const {Link} = Anchor;
-// type BigCardState = {children: []}
 type question = any;
 
 function BigCard() {
@@ -82,7 +80,7 @@ function BigCard() {
           title="Thank you!"
           subTitle={
             <Anchor>
-              <Link href={formURL} title="Your form is live." />
+              <Anchor.Link href={formURL} title="Your form is live." />
             </Anchor>
           }
         />
@@ -90,17 +88,17 @@ function BigCard() {
     );
   } else
     return (
-      <div>
+      <PageHeader ghost={true} title="Create a survey">
         <Form form={formHook}>
           <Card
-            cover={<img alt="example" src={header} />}
             actions={[
               <Dropdown overlay={menu}>
                 <Button>
                   Add Question <DownOutlined />
                 </Button>
               </Dropdown>,
-              <Button type="primary"
+              <Button
+                type="primary"
                 onClick={async () => {
                   const values = await formHook.validateFields();
                   console.log('validation ' + values.name);
@@ -121,7 +119,7 @@ function BigCard() {
                   var form = {
                     title: surveyTitle,
                     fields: questions,
-                    creator: { email: user.email }
+                    creator: {email: user.email},
                   };
 
                   console.log('Form: ', form);
@@ -136,7 +134,7 @@ function BigCard() {
                     console.log(result);
                     let id = result.data.addForm.form[0].id;
                     let url =
-                      window.location.href.replace('/creator', '') +
+                      window.location.href.replace('/create', '') +
                       '/form/' +
                       id;
                     setFormURL(url);
@@ -146,29 +144,10 @@ function BigCard() {
                   }
                 }}
               >
-                Create Form
+                Create
               </Button>,
             ]}
           >
-            <Meta
-              title="Surveyo"
-              description="Simple App that let's you create simple surveys"
-            />
-            <br />
-            <br />
-            {/* <h1>Survey Title</h1> */}
-
-            {/* <Form.Item
-            name="note"
-            label="Note"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item> */}
             <Form.Item
               label="Survey Title"
               name="survey title"
@@ -181,28 +160,14 @@ function BigCard() {
                 }}
               />
             </Form.Item>
-
-            <br />
-            <br />
-
             {questions.map((question: question, index: number) => (
               <div key={index}>
                 <Card>{getCard(index)}</Card>
-                <br />
-                <br />
               </div>
             ))}
-            <br />
-            <br />
           </Card>
         </Form>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-      </div>
+      </PageHeader>
     );
 }
 
