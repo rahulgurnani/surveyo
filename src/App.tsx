@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Spin, Card } from 'antd';
+import {Button, Spin, Card} from 'antd';
 import './App.css';
 import 'antd/dist/antd.css';
 import BigCard from './components/BigCard';
@@ -7,26 +7,32 @@ import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
 import VizPage from './components/Charts';
 import Dashboard from './components/Dashboard';
-import { ApolloProvider } from '@apollo/client';
-import { Switch, Route, Link, NavLink, } from 'react-router-dom';
-import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
+import {ApolloProvider} from '@apollo/client';
+import {Switch, Route, Link, NavLink} from 'react-router-dom';
+import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import createApolloClient from './apollo_config';
 import logo from './logo.svg';
-import { Layout, Typography } from 'antd';
-import { useMutation, gql } from '@apollo/client';
+import {Layout, Typography} from 'antd';
+import {useMutation, gql} from '@apollo/client';
 
 function Loading() {
-  return <div style={{ textAlign: "center" }}><Spin /></div>
+  return (
+    <div style={{textAlign: 'center'}}>
+      <Spin />
+    </div>
+  );
 }
 
-function PrivateRoute({ component, ...args }: any) {
-  return <Route
-    component={withAuthenticationRequired(component, {
-      onRedirecting: () => <Loading />,
-    })}
-    {...args}
-  />
-};
+function PrivateRoute({component, ...args}: any) {
+  return (
+    <Route
+      component={withAuthenticationRequired(component, {
+        onRedirecting: () => <Loading />,
+      })}
+      {...args}
+    />
+  );
+}
 
 const CREATE_USER = gql`
   mutation($user: AddUserInput!) {
@@ -39,16 +45,16 @@ const CREATE_USER = gql`
 `;
 
 function SyMenu(isAuthenticated: Boolean) {
-  const { loginWithRedirect, logout } = useAuth0();
+  const {loginWithRedirect, logout} = useAuth0();
 
   return (
     <>
-      <div style={{ float: 'left' }}>
+      <div style={{float: 'left'}}>
         <NavLink to="/">
-          <img src={logo} style={{ height: '24px' }} />
+          <img src={logo} style={{height: '24px'}} />
         </NavLink>
       </div>
-      <div style={{ float: 'right' }}>
+      <div style={{float: 'right'}}>
         {isAuthenticated ? (
           <Button
             onClick={() =>
@@ -57,71 +63,96 @@ function SyMenu(isAuthenticated: Boolean) {
               })
             }
             ghost
-            style={{ color: '#000000', borderColor: '#000000', margin: '10px' }}
+            style={{color: '#000000', borderColor: '#000000', margin: '10px'}}
           >
             Logout
           </Button>
-        ) : <Button
-          onClick={() =>
-            loginWithRedirect({
-              returnTo: window.location.origin,
-            })
-          }
-          ghost
-          style={{ color: '#000000', borderColor: '#000000', margin: '10px' }}
-        >
-            Login
-      </Button>
-        }
+        ) : (
+          <>
+            <Button
+              onClick={() =>
+                loginWithRedirect({
+                  returnTo: window.location.origin,
+                })
+              }
+              ghost
+              style={{color: '#000000', borderColor: '#000000', margin: '10px'}}
+            >
+              Login
+            </Button>
+            <Button
+              type="primary"
+              onClick={() =>
+                loginWithRedirect({
+                  screen_hint: 'signup',
+                })
+              }
+            >
+              Sign up
+            </Button>
+          </>
+        )}
       </div>
     </>
   );
 }
 
 function App() {
-  const {
-    isAuthenticated,
-    isLoading,
-    getIdTokenClaims,
-  } = useAuth0();
+  const {isAuthenticated, isLoading, getIdTokenClaims} = useAuth0();
 
-  return <ApolloProvider client={createApolloClient(isAuthenticated ? getIdTokenClaims : null)}>
-    <Layout>
-      <Layout.Header style={{ background: 'white' }}>
-        {SyMenu(isAuthenticated as Boolean)}
-      </Layout.Header>
-      <Layout.Content>
-        <Card>
-          {
-            isLoading ?
-              <Loading /> :
+  return (
+    <ApolloProvider
+      client={createApolloClient(isAuthenticated ? getIdTokenClaims : null)}
+    >
+      <Layout>
+        <Layout.Header style={{background: 'white'}}>
+          {SyMenu(isAuthenticated as Boolean)}
+        </Layout.Header>
+        <Layout hasSider>
+        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+        <Layout.Content>
+          <Card bordered={false}>
+            {isLoading ? (
+              <Loading />
+            ) : (
               <Switch>
-                <Route exact path="/" component={isAuthenticated ? Dashboard : Home} />
+                <Route
+                  exact
+                  path="/"
+                  component={isAuthenticated ? Dashboard : Home}
+                />
                 <Route exact path="/form/:id" component={FormPage} />
                 <PrivateRoute exact path="/create" component={BigCard} />
                 <PrivateRoute exact path="/charts/:id" component={VizPage} />
-                <PrivateRoute exact path="/graphiql/:id" component={GraphiqlCard} />
+                <PrivateRoute
+                  exact
+                  path="/graphiql/:id"
+                  component={GraphiqlCard}
+                />
               </Switch>
-          }
-        </Card>
-      </Layout.Content>
-      <Layout.Footer
-        style={{
-          background: 'white',
-          bottom: '0',
-          width: '100%',
-          textAlign: 'center',
-        }}
-      >
-        Copyright &copy; Surveyo. All rights reserved.
-           </Layout.Footer>
-    </Layout>
-  </ApolloProvider>
+            )}
+            </Card>
+        </Layout.Content>
+        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+        </Layout>
+        <Layout.Footer
+          style={{
+            background: 'white',
+            bottom: '0',
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          Copyright &copy; Surveyo. All rights reserved.
+        </Layout.Footer>
+      </Layout>
+    </ApolloProvider>
+  );
 }
 
 function Home() {
   return (
-    <Layout.Content
+    <div
       style={{
         background: 'white',
         height: '80vh',
@@ -130,7 +161,8 @@ function Home() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-      }}>
+      }}
+    >
       <img src={logo} />
       <Typography.Title level={3}>Surveys, simplified.</Typography.Title>
       <Link to="/create">
@@ -138,7 +170,7 @@ function Home() {
           Create a survey
         </Button>
       </Link>
-    </Layout.Content>
+    </div>
   );
 }
 
