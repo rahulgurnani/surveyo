@@ -120,9 +120,7 @@ function App() {
             )}
             {/* </Card> */}
         </Layout.Content>
-        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
-
-        
+        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />        
         </Layout>
       </Layout>
     </ApolloProvider>
