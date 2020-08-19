@@ -9,6 +9,7 @@ import {
 
 import config from './server_config.json';
 
+
 function createApolloClient(getIdTokenClaims)  {
   if(getIdTokenClaims == null) {
     return new ApolloClient({
