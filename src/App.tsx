@@ -105,7 +105,6 @@ function App() {
           <Layout hasSider>
             <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
             <Layout.Content>
-              {/* <Card bordered={false}> */}
               {isLoading ? (
                 <Loading />
               ) : (
@@ -125,7 +124,6 @@ function App() {
                   />
                 </Switch>
               )}
-              {/* </Card> */}
             </Layout.Content>
             <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
           </Layout>
