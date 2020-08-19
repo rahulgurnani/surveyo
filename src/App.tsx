@@ -1,7 +1,5 @@
 import React from 'react';
 import {Button, Spin, Card} from 'antd';
-import './App.css';
-import 'antd/dist/antd.css';
 import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './components/Form';
@@ -10,10 +8,9 @@ import Dashboard from './components/Dashboard';
 import {ApolloProvider} from '@apollo/client';
 import {Switch, Route, Link, NavLink} from 'react-router-dom';
 import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
-import createApolloClient from './apollo_config';
+import createApolloClient from './ApolloConfig';
 import logo from './logo.svg';
 import {Layout, Typography} from 'antd';
-import {useMutation, gql} from '@apollo/client';
 
 function Loading() {
   return (
@@ -33,16 +30,6 @@ function PrivateRoute({component, ...args}: any) {
     />
   );
 }
-
-const CREATE_USER = gql`
-  mutation($user: AddUserInput!) {
-    addUser(input: [$user]) {
-      user {
-        id
-      }
-    }
-  }
-`;
 
 function SyMenu(isAuthenticated: Boolean) {
   const {loginWithRedirect, logout} = useAuth0();
@@ -104,14 +91,14 @@ function App() {
     <ApolloProvider
       client={createApolloClient(isAuthenticated ? getIdTokenClaims : null)}
     >
-      <Layout>
+      <Layout style={{height: "100%"}}>
         <Layout.Header style={{background: 'white'}}>
           {SyMenu(isAuthenticated as Boolean)}
         </Layout.Header>
         <Layout hasSider>
-        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
-        <Layout.Content>
-          <Card bordered={false}>
+        <Layout.Sider breakpoint="lg" collapsedWidth={1} />
+        <Layout.Content >
+          {/* <Card bordered={false}> */}
             {isLoading ? (
               <Loading />
             ) : (
@@ -131,20 +118,11 @@ function App() {
                 />
               </Switch>
             )}
-            </Card>
+            {/* </Card> */}
         </Layout.Content>
-        <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+        <Layout.Sider breakpoint="lg" collapsedWidth={1} />
+        
         </Layout>
-        <Layout.Footer
-          style={{
-            background: 'white',
-            bottom: '0',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          Copyright &copy; Surveyo. All rights reserved.
-        </Layout.Footer>
       </Layout>
     </ApolloProvider>
   );
@@ -155,7 +133,7 @@ function Home() {
     <div
       style={{
         background: 'white',
-        height: '80vh',
+        height: '100%',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',

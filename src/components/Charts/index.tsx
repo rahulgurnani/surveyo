@@ -6,18 +6,7 @@ import ReactWordcloud from 'react-wordcloud';
 import './index.css';
 import {Bar, Doughnut} from 'react-chartjs-2';
 
-export default function VizPage() {
-  return (
-    <PageHeader
-      ghost={true}
-      onBack={() => (window.location.href = '/')}
-      title="Charts"
-    >
-      <GqlViz />
-    </PageHeader>
-  );
-}
-
+// TODO(ajeet): Move these out to another file
 const GET_THINGS = gql`
   query($id: ID!) {
     getForm(id: $id) {
@@ -37,6 +26,19 @@ const GET_THINGS = gql`
     }
   }
 `;
+
+export default function VizPage() {
+  return (
+    <PageHeader
+      ghost={true}
+      onBack={() => (window.location.href = '/')}
+      title="Charts"
+    >
+      <GqlViz />
+    </PageHeader>
+  );
+}
+
 
 function GqlViz() {
   const {id} = useParams();
@@ -83,13 +85,15 @@ function GqlViz() {
         if (chart) {
           return (
             <Col span={12}>
-              <Card>
+              <Card style={{height: "100%"}}>
                 <h3>{field.title}</h3>
+                <div style= {{height: "fit-content"}}>
                 {chart}
+                </div>
               </Card>
             </Col>
           );
-        }
+        } 
       })}
     </Row>
   );
