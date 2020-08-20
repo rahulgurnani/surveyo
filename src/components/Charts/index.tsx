@@ -8,7 +8,7 @@ import {Bar, Doughnut} from 'react-chartjs-2';
 
 // TODO(ajeet): Move these out to another file
 const GET_THINGS = gql`
-  query($id: ID!) {
+  query GetThings($id: ID!) {
     getForm(id: $id) {
       title
       fields {
