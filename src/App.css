@@ -10,3 +10,7 @@ body {
 code {
   font-family: 'Ubuntu Mono';
 }
+
+#root {
+  height: 100%;
+}
