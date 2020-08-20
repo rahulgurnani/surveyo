@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Spin, Card} from 'antd';
-import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
 import FormPage from './Form';
 import VizPage from './components/Charts';
@@ -11,6 +10,7 @@ import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import createApolloClient from './ApolloConfig';
 import logo from './logo.svg';
 import {Layout, Typography} from 'antd';
+import FormCreator from './components/FormCreator';
 
 function Loading() {
   return (
@@ -109,7 +109,7 @@ function App() {
                   component={isAuthenticated ? Dashboard : Home}
                 />
                 <Route exact path="/form/:id" component={FormPage} />
-                <PrivateRoute exact path="/create" component={BigCard} />
+                <PrivateRoute exact path="/create" component={FormCreator} />
                 <PrivateRoute exact path="/charts/:id" component={VizPage} />
                 <PrivateRoute
                   exact
