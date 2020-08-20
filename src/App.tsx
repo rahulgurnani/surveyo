@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Spin, Card} from 'antd';
 import BigCard from './components/BigCard';
 import GraphiqlCard from './components/GraphiqlCard';
-import FormPage from './components/Form';
+import FormPage from './Form';
 import VizPage from './components/Charts';
 import Dashboard from './components/Dashboard';
 import {ApolloProvider} from '@apollo/client';
