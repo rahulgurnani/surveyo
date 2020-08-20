@@ -91,14 +91,14 @@ function App() {
     <ApolloProvider
       client={createApolloClient(isAuthenticated ? getIdTokenClaims : null)}
     >
-      <Layout style={{height: "100%"}}>
+      <Layout style={{height: '100%'}}>
         <Layout.Header style={{background: 'white'}}>
           {SyMenu(isAuthenticated as Boolean)}
         </Layout.Header>
         <Layout hasSider>
-        <Layout.Sider breakpoint="lg" collapsedWidth={1} />
-        <Layout.Content >
-          {/* <Card bordered={false}> */}
+          <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+          <Layout.Content>
+            {/* <Card bordered={false}> */}
             {isLoading ? (
               <Loading />
             ) : (
@@ -119,9 +119,8 @@ function App() {
               </Switch>
             )}
             {/* </Card> */}
-        </Layout.Content>
-        <Layout.Sider breakpoint="lg" collapsedWidth={1} />
-        
+          </Layout.Content>
+          <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
         </Layout>
       </Layout>
     </ApolloProvider>
