@@ -1,15 +1,13 @@
 import './App.css';
-
 import 'antd/dist/antd.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Auth0Provider } from '@auth0/auth0-react';
-import config from "./auth_config.json";
-import onRedirectCallback from "./ApolloConfig";
-import { BrowserRouter as Router } from "react-router-dom";
+import {Auth0Provider} from '@auth0/auth0-react';
+import config from './auth_config.json';
+import onRedirectCallback from './ApolloConfig';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,10 +16,9 @@ ReactDOM.render(
       clientId={config.clientId}
       audience={config.audience}
       redirectUri={window.location.origin}
-      onRedirectCallback={onRedirectCallback}>
-      <Router>
-        <App />
-      </Router>
+      onRedirectCallback={onRedirectCallback}
+    >
+      <App />
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')

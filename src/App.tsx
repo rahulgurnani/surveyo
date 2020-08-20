@@ -6,7 +6,13 @@ import FormPage from './Form';
 import VizPage from './components/Charts';
 import Dashboard from './components/Dashboard';
 import {ApolloProvider} from '@apollo/client';
-import {Switch, Route, Link, NavLink} from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  Link,
+  NavLink,
+  BrowserRouter as Router,
+} from 'react-router-dom';
 import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import createApolloClient from './ApolloConfig';
 import logo from './logo.svg';
@@ -91,38 +97,40 @@ function App() {
     <ApolloProvider
       client={createApolloClient(isAuthenticated ? getIdTokenClaims : null)}
     >
-      <Layout style={{height: '100%'}}>
-        <Layout.Header style={{background: 'white'}}>
-          {SyMenu(isAuthenticated as Boolean)}
-        </Layout.Header>
-        <Layout hasSider>
-          <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
-          <Layout.Content>
-            {/* <Card bordered={false}> */}
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  component={isAuthenticated ? Dashboard : Home}
-                />
-                <Route exact path="/form/:id" component={FormPage} />
-                <PrivateRoute exact path="/create" component={BigCard} />
-                <PrivateRoute exact path="/charts/:id" component={VizPage} />
-                <PrivateRoute
-                  exact
-                  path="/graphiql/:id"
-                  component={GraphiqlCard}
-                />
-              </Switch>
-            )}
-            {/* </Card> */}
-          </Layout.Content>
-          <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+      <Router>
+        <Layout style={{height: '100%'}}>
+          <Layout.Header style={{background: 'white'}}>
+            {SyMenu(isAuthenticated as Boolean)}
+          </Layout.Header>
+          <Layout hasSider>
+            <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+            <Layout.Content>
+              {/* <Card bordered={false}> */}
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    component={isAuthenticated ? Dashboard : Home}
+                  />
+                  <Route exact path="/form/:id" component={FormPage} />
+                  <PrivateRoute exact path="/create" component={BigCard} />
+                  <PrivateRoute exact path="/charts/:id" component={VizPage} />
+                  <PrivateRoute
+                    exact
+                    path="/graphiql/:id"
+                    component={GraphiqlCard}
+                  />
+                </Switch>
+              )}
+              {/* </Card> */}
+            </Layout.Content>
+            <Layout.Sider breakpoint="lg" collapsedWidth={1} theme="light" />
+          </Layout>
         </Layout>
-      </Layout>
+      </Router>
     </ApolloProvider>
   );
 }

@@ -5,11 +5,12 @@ import {Row, Layout, PageHeader} from 'antd';
 import 'graphiql/graphiql.css';
 
 import config from '../../server_config.json';
-const URL = config.graphqlEndpoint;
 
 function GraphiqlCard() {
+  const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT;
+
   const graphQLFetcher = async (graphQLParams: any) => {
-    return await fetch(URL, {
+    return await fetch(GRAPHQL_ENDPOINT!, {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(graphQLParams),
