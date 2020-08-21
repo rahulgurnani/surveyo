@@ -29,6 +29,42 @@ import { DeleteOutlined, MinusCircleOutlined, PlusOutlined, } from '@ant-design/
 
 const { Option } = Select;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 20, offset: 4 },
+  },
+};
+
+const radioStyle = {
+  display: 'block',
+  height: '30px',
+  lineHeight: '30px',
+};
+
+const dateFormat = 'YYYY/MM/DD';
+
+const CREATE_FORM = gql`
+    mutation AddForm($form: AddFormInput!) {
+      addForm(input: [$form]) {
+        form {
+          id
+        }
+      }
+    }
+  `;
+
 function QuestionCard({ question, updateQuestion, deleteQuestion }: any) {
   return (<div>
     <Card
@@ -192,45 +228,8 @@ function createQuestionField({question, updateQuestion}: any) {
 }
 
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
-  },
-};
-
-const radioStyle = {
-  display: 'block',
-  height: '30px',
-  lineHeight: '30px',
-};
-
-const dateFormat = 'YYYY/MM/DD';
-
-type question = any;
-const CREATE_FORM = gql`
-    mutation AddForm($form: AddFormInput!) {
-      addForm(input: [$form]) {
-        form {
-          id
-        }
-      }
-    }
-  `;
-
-
 function FormCreator() {
-  const [questions, setQuestions] = useState<question>([]);
+  const [questions, setQuestions] = useState<any>([]);
   const [formSubmitted, setFormSubmitState] = useState(false);
   const [formURL, setFormURL] = useState('');
   const [surveyTitle, setSurveyTitle] = useState('');
@@ -243,7 +242,7 @@ function FormCreator() {
     const question = questions[i];
     const params = {
       question: question,
-      updateQuestion: (question: question) =>
+      updateQuestion: (question: any) =>
         setQuestions(update(questions, { $splice: [[i, 1, question]] })),
       deleteQuestion: () =>
         setQuestions(update(questions, { $splice: [[i, 1]] })),
@@ -347,7 +346,7 @@ function FormCreator() {
                 }}
               />
             </Form.Item>
-            {questions.map((question: question, index: number) => (
+            {questions.map((question: any, index: number) => (
               <div key={index}>
                 <Card>{getCard(index)}</Card>
               </div>
