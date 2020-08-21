@@ -32,7 +32,7 @@ function BigCard() {
   const [formHook] = useForm();
   const {user} = useAuth0();
   const CREATE_FORM = gql`
-    mutation($form: AddFormInput!) {
+    mutation AddForm($form: AddFormInput!) {
       addForm(input: [$form]) {
         form {
           id
