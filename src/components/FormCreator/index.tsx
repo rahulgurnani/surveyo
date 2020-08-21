@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Menu,
@@ -9,7 +9,7 @@ import {
   Dropdown,
   Anchor,
   PageHeader,
-  DatePicker, 
+  DatePicker,
   Checkbox,
   Radio,
   Col,
@@ -17,131 +17,195 @@ import {
   Rate
 } from 'antd';
 import update from 'immutability-helper';
-import {gql, useMutation} from '@apollo/client';
-import {DownOutlined} from '@ant-design/icons';
+import { gql, useMutation } from '@apollo/client';
+import { DownOutlined } from '@ant-design/icons';
 
 
-import {useForm} from 'antd/lib/form/Form';
-import {useAuth0} from '@auth0/auth0-react';
-import {Select} from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Select } from 'antd';
 import moment from 'moment';
-import {DeleteOutlined, MinusCircleOutlined, PlusOutlined,} from '@ant-design/icons';
+import { DeleteOutlined, MinusCircleOutlined, PlusOutlined, } from '@ant-design/icons';
 
-const {Option} = Select;
+const { Option } = Select;
 
-function RatingCard({question, updateQuestion, deleteQuestion}: any) {
-  let count = question.count || 3;
-  return (
-    <div>
-      <Card
-        bordered={false}
-        actions={[
-          <DeleteOutlined
-            key="setting"
-            onClick={e => {
-              deleteQuestion();
-            }}
-          />,
-        ]}
+function QuestionCard({ question, updateQuestion, deleteQuestion }: any) {
+  return (<div>
+    <Card
+      bordered={false}
+      actions={[
+        <DeleteOutlined
+          key="setting"
+          onClick={e => {
+            deleteQuestion();
+          }}
+        />,
+      ]}
+    >
+      <Input
+        placeholder="Enter your question here"
+        allowClear
+        value={question.title}
+        onChange={e => updateQuestion({ ...question, title: e.target.value })}
+      />
+      <Checkbox
+        onChange={e =>
+          updateQuestion({ ...question, required: e.target.checked })
+        }
       >
-        <Input
-          placeholder="Enter your question here"
-          allowClear
-          value={question.title}
-          onChange={e => updateQuestion({...question, title: e.target.value})}
-        />
-        <Checkbox
-          onChange={e =>
-            updateQuestion({...question, required: e.target.checked})
-          }
-        >
-          Want this to be a required field
+        Want this to be a required field
         </Checkbox>
+        {createQuestionField({question, updateQuestion})}
+    </Card>
+  </div>);
+}
+
+
+function SingleChoiceQuestionField({question, updateQuestion, options}: any) {
+  return <Form
+  name="dynamic_form_item"
+  {...formItemLayoutWithOutLabel}>
+  <Form.List name="names">
+    {(fields, { add, remove }) => {
+      return (
+        <div>
+          {fields.map((field, index) => (
+            <Form.Item
+              {...(index === 0
+                ? formItemLayout
+                : formItemLayoutWithOutLabel)}
+              label={index === 0 ? 'Options' : ''}
+              required={false}
+              key={field.key}
+            >
+              <div>
+                <Row>
+                  <Col span={16}>
+                    <div>
+                      <Radio style={radioStyle} value={1}>
+                        <Form.Item
+                          {...field}
+                          validateTrigger={['onChange', 'onBlur']}
+                          rules={[
+                            {
+                              required: true,
+                              whitespace: true,
+                              message: 'Please input option',
+                            },
+                          ]}
+                          noStyle
+                        >
+                          <Input
+                            placeholder="Please input option"
+                            style={{ width: '60%' }}
+                            value={options[index]}
+                            onChange={e => {
+                              let newOptions = [...options];
+                              newOptions[index] = e.target.value;
+                              updateQuestion({
+                                ...question,
+                                options: newOptions,
+                              });
+                            }}
+                          />
+                        </Form.Item>
+                      </Radio>
+                    </div>
+                  </Col>
+                  <Col span={8}>
+                    <div>
+                      {fields.length > 1 ? (
+                        <MinusCircleOutlined
+                          className="dynamic-delete-button"
+                          style={{ margin: '0 8px' }}
+                          onClick={() => {
+                            remove(field.name);
+                            let newOptions = update(options, {
+                              $splice: [[field.name, 1]],
+                            });
+                            updateQuestion({
+                              ...question,
+                              options: newOptions,
+                            });
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Form.Item>
+          ))}
+          <Form.Item>
+            <Button
+              type="dashed"
+              onClick={() => {
+                add();
+                updateQuestion({
+                  ...question,
+                  options: [...options, ''],
+                });
+              }}
+              style={{ width: '60%' }}
+            >
+              <PlusOutlined /> Add option
+            </Button>
+          </Form.Item>
+        </div>
+      );
+    }}
+  </Form.List>
+</Form>;
+}
+
+function createQuestionField({question, updateQuestion}: any) {
+  switch(question.type) {
+    case 'SingleChoice':
+      const options = question.options || [];
+      return  SingleChoiceQuestionField({question, updateQuestion, options});
+    case 'Date':
+        return <DatePicker
+        defaultValue={moment('2015/01/01', dateFormat)}
+        format={dateFormat}
+        disabled
+      />;
+      case 'Rating':
+        let count = question.count || 3;
+        return <>
         <p>Maximum rating</p>
         <Radio.Group
           options={['3', '5', '10']}
           value={count}
           onChange={e => {
             count = e.target.value;
-            updateQuestion({...question, count: e.target.value});
+            updateQuestion({ ...question, count: e.target.value });
           }}
         />
         <Rate
           count={count}
           allowHalf
         />
-      </Card>
-    </div>
-  );
+        </>;
+      default:
+        return  <Input.TextArea placeholder="Short answer here" allowClear disabled />;
+  }
 }
 
-function DropDown(props: any) {
-  return (
-    <div>
-      <Select
-        defaultValue="Text"
-        dropdownMatchSelectWidth={false}
-        onChange={e => props.changeCardType(e)}
-      >
-        <Option value="Text">Short Answer</Option>
-        <Option value="SingleChoice">Multiple Choice</Option>
-        <Option value="Date">Date</Option>
-        <Option value="Rating">Rating</Option>
-        {/* <Option value="date">Date</Option> */}
-      </Select>
-    </div>
-  );
-}
-
-
-function TextQuestionCard({question, updateQuestion, deleteQuestion}: any) {
-  return (
-    <div>
-      <Card
-        bordered={false}
-        actions={[
-          <DeleteOutlined
-            key="setting"
-            label="Check2"
-            onClick={e => {
-              deleteQuestion();
-            }}
-          />,
-        ]}
-      >
-        <Input
-          placeholder="Enter your question here"
-          allowClear
-          value={question.title}
-          onChange={e => updateQuestion({...question, title: e.target.value})}
-        />
-        <Checkbox
-          onChange={e =>
-            updateQuestion({...question, required: e.target.checked})
-          }
-        >
-          Want this to be a required field
-        </Checkbox>
-        <Input.TextArea placeholder="Short answer here" allowClear disabled />
-      </Card>
-    </div>
-  );
-}
 
 const formItemLayout = {
   labelCol: {
-    xs: {span: 24},
-    sm: {span: 4},
+    xs: { span: 24 },
+    sm: { span: 4 },
   },
   wrapperCol: {
-    xs: {span: 24},
-    sm: {span: 20},
+    xs: { span: 24 },
+    sm: { span: 20 },
   },
 };
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
-    xs: {span: 24, offset: 0},
-    sm: {span: 20, offset: 4},
+    xs: { span: 24, offset: 0 },
+    sm: { span: 20, offset: 4 },
   },
 };
 
@@ -151,176 +215,7 @@ const radioStyle = {
   lineHeight: '30px',
 };
 
-function MCQCard({question, updateQuestion, deleteQuestion}: any) {
-  const options = question.options || [];
-  return (
-    <div>
-      <Card
-        bordered={false}
-        actions={[
-          <DeleteOutlined
-            key="setting"
-            label="Check2"
-            onClick={() => deleteQuestion()}
-          />,
-        ]}
-      >
-        <Input
-          placeholder="Enter your question here"
-          allowClear
-          value={question.title}
-          onChange={e => updateQuestion({...question, title: e.target.value})}
-        />
-        <Checkbox
-          onChange={e =>
-            updateQuestion({...question, required: e.target.checked})
-          }
-        >
-          Want this to be a required field
-        </Checkbox>
-        <Form
-          // form={form}
-          name="dynamic_form_item"
-          {...formItemLayoutWithOutLabel}
-        >
-          <Form.List name="names">
-            {(fields, {add, remove}) => {
-              return (
-                <div>
-                  {fields.map((field, index) => (
-                    <Form.Item
-                      {...(index === 0
-                        ? formItemLayout
-                        : formItemLayoutWithOutLabel)}
-                      label={index === 0 ? 'Options' : ''}
-                      required={false}
-                      key={field.key}
-                    >
-                      <div>
-                        <Row>
-                          <Col span={16}>
-                            <div>
-                              <Radio style={radioStyle} value={1}>
-                                <Form.Item
-                                  {...field}
-                                  validateTrigger={['onChange', 'onBlur']}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      whitespace: true,
-                                      message: 'Please input option',
-                                    },
-                                  ]}
-                                  noStyle
-                                >
-                                  <Input
-                                    placeholder="Please input option"
-                                    style={{width: '60%'}}
-                                    value={options[index]}
-                                    onChange={e => {
-                                      let newOptions = [...options];
-                                      newOptions[index] = e.target.value;
-                                      updateQuestion({
-                                        ...question,
-                                        options: newOptions,
-                                      });
-                                    }}
-                                  />
-                                </Form.Item>
-                              </Radio>
-                            </div>
-                          </Col>
-                          <Col span={8}>
-                            <div>
-                              {fields.length > 1 ? (
-                                <MinusCircleOutlined
-                                  className="dynamic-delete-button"
-                                  style={{margin: '0 8px'}}
-                                  onClick={() => {
-                                    remove(field.name);
-                                    let newOptions = update(options, {
-                                      $splice: [[field.name, 1]],
-                                    });
-                                    // update(questions, {$splice: [[i, 1, question]]})
-
-                                    // newOptions[index] = e.target.value;
-                                    // fields = newOptions;
-                                    updateQuestion({
-                                      ...question,
-                                      options: newOptions,
-                                    });
-                                  }}
-                                />
-                              ) : null}
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </Form.Item>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => {
-                        add();
-                        updateQuestion({
-                          ...question,
-                          options: [...options, ''],
-                        });
-                      }}
-                      style={{width: '60%'}}
-                    >
-                      <PlusOutlined /> Add option
-                    </Button>
-                  </Form.Item>
-                </div>
-              );
-            }}
-          </Form.List>
-        </Form>
-      </Card>
-    </div>
-  );
-}
-
 const dateFormat = 'YYYY/MM/DD';
-
-function DateQuestionCard({question, updateQuestion, deleteQuestion}: any) {
-  return (
-    <div>
-      <Card
-        bordered={false}
-        actions={[
-          <DeleteOutlined
-            key="setting"
-            onClick={e => {
-              deleteQuestion();
-            }}
-          />,
-        ]}
-      >
-        <Input
-          placeholder="Enter your question here"
-          allowClear
-          value={question.title}
-          onChange={e => updateQuestion({...question, title: e.target.value})}
-        />
-        <Checkbox
-          onChange={e =>
-            updateQuestion({...question, required: e.target.checked})
-          }
-        >
-          Want this to be a required field
-        </Checkbox>
-        <DatePicker
-          defaultValue={moment('2015/01/01', dateFormat)}
-          format={dateFormat}
-          disabled
-        />
-      </Card>
-    </div>
-  );
-}
 
 type question = any;
 const CREATE_FORM = gql`
@@ -340,32 +235,23 @@ function FormCreator() {
   const [formURL, setFormURL] = useState('');
   const [surveyTitle, setSurveyTitle] = useState('');
   const [formHook] = useForm();
-  const {user} = useAuth0();
-  
-  const [sendToClient, {loading}] = useMutation(CREATE_FORM);
+  const { user } = useAuth0();
+
+  const [sendToClient, { loading }] = useMutation(CREATE_FORM);
 
   const getCard = (i: number) => {
     const question = questions[i];
     const params = {
       question: question,
       updateQuestion: (question: question) =>
-        setQuestions(update(questions, {$splice: [[i, 1, question]]})),
+        setQuestions(update(questions, { $splice: [[i, 1, question]] })),
       deleteQuestion: () =>
-        setQuestions(update(questions, {$splice: [[i, 1]]})),
+        setQuestions(update(questions, { $splice: [[i, 1]] })),
     };
-    switch (question.type) {
-      case 'SingleChoice':
-        return <MCQCard {...params} />;
-      case 'Date':
-        return <DateQuestionCard {...params} />;
-      case 'Rating':
-        return <RatingCard {...params} />;
-      default:
-        return <TextQuestionCard {...params} />;
-    }
+    return <QuestionCard {...params} />;
   };
   const menu = (
-    <Menu onClick={e => setQuestions(questions.concat({type: e.key}))}>
+    <Menu onClick={e => setQuestions(questions.concat({ type: e.key }))}>
       <Menu.Item key="Text">Short Answer</Menu.Item>
       <Menu.Item key="SingleChoice">Multiple Choice</Menu.Item>
       <Menu.Item key="Date">Date</Menu.Item>
@@ -407,7 +293,7 @@ function FormCreator() {
                     if ('options' in questions[index]) {
                       let newOptions = questions[index].options.map(
                         (value: any, index: any) => {
-                          return {order: index, title: value};
+                          return { order: index, title: value };
                         }
                       );
                       questions[index].options = newOptions;
@@ -420,7 +306,7 @@ function FormCreator() {
                   var form = {
                     title: surveyTitle,
                     fields: questions,
-                    creator: {email: user.email},
+                    creator: { email: user.email },
                   };
 
                   console.log('Form: ', form);
@@ -452,7 +338,7 @@ function FormCreator() {
             <Form.Item
               label="Survey Title"
               name="survey title"
-              rules={[{required: true, message: 'Please input Survey title'}]}
+              rules={[{ required: true, message: 'Please input Survey title' }]}
             >
               <Input
                 placeholder="Enter your survey title"
