@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Auth0Provider} from '@auth0/auth0-react';
-import config from './auth_config.json';
+import config from './AuthConfig.json';
 import onRedirectCallback from './ApolloConfig';
 
 ReactDOM.render(
