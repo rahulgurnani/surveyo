@@ -21,7 +21,7 @@ import FormCreator from './FormCreator';
 import history from './history';
 
 // Initialize google analytics page view tracking
-const trackingId = "UA-176092295-1";
+const trackingId = "UA-75364122-11";
 ReactGA.initialize(trackingId);
 
 history.listen(location => {
