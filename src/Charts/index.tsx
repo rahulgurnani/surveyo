@@ -5,27 +5,7 @@ import {Alert, Card, Row, Col, PageHeader} from 'antd';
 import ReactWordcloud from 'react-wordcloud';
 import './index.css';
 import {Bar, Doughnut} from 'react-chartjs-2';
-
-// TODO(ajeet): Move these out to another file
-const GET_THINGS = gql`
-  query GetThings($id: ID!) {
-    getForm(id: $id) {
-      title
-      fields {
-        title
-        type
-        count
-        entries {
-          rating
-          singleChoice {
-            title
-          }
-          text
-        }
-      }
-    }
-  }
-`;
+import {GET_CHART_DATA} from './query';
 
 export default function VizPage() {
   return (
@@ -39,11 +19,10 @@ export default function VizPage() {
   );
 }
 
-
 function GqlViz() {
   const {id} = useParams();
 
-  const {loading, error, data} = useQuery(GET_THINGS, {
+  const {loading, error, data} = useQuery(GET_CHART_DATA, {
     variables: {id},
   });
 
@@ -60,21 +39,21 @@ function GqlViz() {
   }
 
   const makeChart = (field: any) => {
-      switch (field.type) {
-        case 'Text':
-          return (
-            <ReactWordcloud
-              options={{
-                rotations: 2,
-                rotationAngles: [-90, 0],
-              }}
-              words={chartWordcloud(field) as any}
-            />
-          );
-        case 'SingleChoice':
-          return <Doughnut data={chartSingleChoice(field) as any} />;
-        case 'Rating':
-          return <Bar data={chartRating(field) as any} />;
+    switch (field.type) {
+      case 'Text':
+        return (
+          <ReactWordcloud
+            options={{
+              rotations: 2,
+              rotationAngles: [-90, 0],
+            }}
+            words={chartWordcloud(field) as any}
+          />
+        );
+      case 'SingleChoice':
+        return <Doughnut data={chartSingleChoice(field) as any} />;
+      case 'Rating':
+        return <Bar data={chartRating(field) as any} />;
     }
   };
 
@@ -85,15 +64,13 @@ function GqlViz() {
         if (chart) {
           return (
             <Col span={12}>
-              <Card style={{height: "100%"}}>
+              <Card style={{height: '100%'}}>
                 <h3>{field.title}</h3>
-                <div style= {{height: "fit-content"}}>
-                {chart}
-                </div>
+                <div style={{height: 'fit-content'}}>{chart}</div>
               </Card>
             </Col>
           );
-        } 
+        }
       })}
     </Row>
   );

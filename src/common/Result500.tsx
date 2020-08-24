@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Button, Result} from 'antd';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 export default function Result404() {
   return (

@@ -6,13 +6,7 @@ import FormPage from './Form';
 import VizPage from './Charts';
 import Dashboard from './Dashboard';
 import {ApolloProvider} from '@apollo/client';
-import {
-  Switch,
-  Route,
-  Link,
-  NavLink,
-  Router,
-} from 'react-router-dom';
+import {Switch, Route, Link, NavLink, Router} from 'react-router-dom';
 import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import createApolloClient from './ApolloConfig';
 import logo from './logo.svg';
@@ -21,11 +15,11 @@ import FormCreator from './FormCreator';
 import history from './history';
 
 // Initialize google analytics page view tracking
-const trackingId = "UA-75364122-11";
+const trackingId = 'UA-75364122-11';
 ReactGA.initialize(trackingId);
 
 history.listen(location => {
-  ReactGA.set({ page: location.pathname }); // Update the user's current page
+  ReactGA.set({page: location.pathname}); // Update the user's current page
   ReactGA.pageview(location.pathname); // Record a pageview for the given page
 });
 

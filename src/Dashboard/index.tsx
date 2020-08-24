@@ -7,23 +7,10 @@ import {
   ExportOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import {gql, useQuery} from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import {useAuth0} from '@auth0/auth0-react';
 import {Link} from 'react-router-dom';
-
-const GET_SURVEYS = gql`
-  query GetSurveys($email: String!) {
-    getUser(email: $email) {
-      forms {
-        id
-        title
-        responses {
-          id
-        }
-      }
-    }
-  }
-`;
+import {GET_FORMS} from './query';
 
 export default function Dashboard() {
   return (
@@ -46,7 +33,7 @@ export default function Dashboard() {
 function DashboardHelper() {
   const {user} = useAuth0();
 
-  const {loading, error, data} = useQuery(GET_SURVEYS, {
+  const {loading, error, data} = useQuery(GET_FORMS, {
     variables: {
       email: user.email,
     },

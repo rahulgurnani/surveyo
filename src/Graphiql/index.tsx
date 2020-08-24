@@ -4,7 +4,6 @@ import {Row, Layout, PageHeader} from 'antd';
 
 import 'graphiql/graphiql.css';
 
-
 function Graphiql() {
   const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT;
 
