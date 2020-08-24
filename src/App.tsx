@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button, Spin, Card} from 'antd';
-import GraphiqlCard from './components/GraphiqlCard';
+import Graphiql from './Graphiql';
 import FormPage from './Form';
-import VizPage from './components/Charts';
-import Dashboard from './components/Dashboard';
+import VizPage from './Charts';
+import Dashboard from './Dashboard';
 import {ApolloProvider} from '@apollo/client';
 import {
   Switch,
@@ -16,7 +16,7 @@ import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import createApolloClient from './ApolloConfig';
 import logo from './logo.svg';
 import {Layout, Typography} from 'antd';
-import FormCreator from './components/FormCreator';
+import FormCreator from './FormCreator';
 
 function Loading() {
   return (
@@ -120,7 +120,7 @@ function App() {
                   <PrivateRoute
                     exact
                     path="/graphiql/:id"
-                    component={GraphiqlCard}
+                    component={Graphiql}
                   />
                 </Switch>
               )}

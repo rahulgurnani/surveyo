@@ -5,7 +5,7 @@ import {Row, Layout, PageHeader} from 'antd';
 import 'graphiql/graphiql.css';
 
 
-function GraphiqlCard() {
+function Graphiql() {
   const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT;
 
   const graphQLFetcher = async (graphQLParams: any) => {
@@ -52,4 +52,4 @@ query {
 }`;
 }
 
-export default GraphiqlCard;
+export default Graphiql;
