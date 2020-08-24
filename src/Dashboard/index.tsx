@@ -69,7 +69,7 @@ function DashboardHelper() {
       render: (text: any, record: any) => (
         <Space size="middle">
           <Tooltip title="Open form">
-            <a href={`/form/${record.id}`} target="_blank">
+            <a href={`/form/${record.id}`} target="_blank" rel="noopener noreferrer">
               <ExportOutlined />
             </a>
           </Tooltip>

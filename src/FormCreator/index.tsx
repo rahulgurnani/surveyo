@@ -20,9 +20,9 @@ import update from 'immutability-helper';
 import {useMutation} from '@apollo/client';
 import {DownOutlined} from '@ant-design/icons';
 
-import {useForm} from 'antd/lib/form/Form';
-import {useAuth0} from '@auth0/auth0-react';
-import {Select} from 'antd';
+
+import { useForm } from 'antd/lib/form/Form';
+import { useAuth0 } from '@auth0/auth0-react';
 import moment from 'moment';
 import {
   DeleteOutlined,
@@ -232,7 +232,7 @@ function FormCreator() {
   const [formHook] = useForm();
   const {user} = useAuth0();
 
-  const [sendToClient, {loading}] = useMutation(ADD_FORM);
+  const [sendToClient] = useMutation(ADD_FORM);
 
   const getCard = (i: number) => {
     const question = questions[i];

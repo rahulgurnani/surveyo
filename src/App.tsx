@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactGA from 'react-ga';
-import {Button, Spin, Card} from 'antd';
+import {Button, Spin} from 'antd';
 import Graphiql from './Graphiql';
 import FormPage from './Form';
 import VizPage from './Charts';
@@ -49,7 +49,7 @@ function SyMenu(isAuthenticated: Boolean) {
     <>
       <div style={{float: 'left'}}>
         <NavLink to="/">
-          <img src={logo} style={{height: '24px'}} />
+          <img src={logo} style={{height: '24px'}} alt="" />
         </NavLink>
       </div>
       <div style={{float: 'right'}}>
@@ -151,7 +151,7 @@ function Home() {
         alignItems: 'center',
       }}
     >
-      <img src={logo} />
+      <img src={logo} alt="" />
       <Typography.Title level={3}>Surveys, simplified.</Typography.Title>
       <Link to="/create">
         <Button type="primary" size="large">

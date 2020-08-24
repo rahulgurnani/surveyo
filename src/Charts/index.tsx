@@ -70,7 +70,9 @@ function GqlViz() {
               </Card>
             </Col>
           );
-        }
+        } else {
+          return null;
+        } 
       })}
     </Row>
   );
