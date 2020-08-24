@@ -29,6 +29,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-wordcloud": "^1.2.6",
+    "react-ga": "^3.1.2",
     "typescript": "^3.9.7"
   },
   "scripts": {
