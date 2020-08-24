@@ -1,6 +1,6 @@
 import React from 'react';
 import {useParams} from 'react-router-dom';
-import {useQuery, gql} from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import {Alert, Card, Row, Col, PageHeader} from 'antd';
 import ReactWordcloud from 'react-wordcloud';
 import './index.css';
