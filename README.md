@@ -21,10 +21,10 @@ GraphQL queries support: [GraphiQL IDE](https://github.com/graphql/graphiql)
 ## Demo
 ### Creating a form
 
-<img src="public/Create-Form.gif" width="400" />
+<img src="public/Create-Form.gif" width="450" />
 
 ### Visualizations of responses
-<img src="public/Charts.gif" width="500" />
+<img src="public/Charts.gif" width="450" />
 
 ## Contribution guidelines
 This is an open source project, and we welcome contributions. Please open an issue if you have a feature request or better still if you have a PR for us to review. 
