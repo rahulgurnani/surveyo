@@ -20,6 +20,9 @@ GraphQL queries support: [GraphiQL IDE](https://github.com/graphql/graphiql)
 
 ## Demo
 ### Creating a form
+
+<img src="public/Create-Form.gif" width="400" />
+
 ### Visualizations of responses
 <img src="public/Charts.gif" width="500" />
 
