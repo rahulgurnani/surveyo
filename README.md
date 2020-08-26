@@ -18,6 +18,11 @@ GraphQL queries support: [GraphiQL IDE](https://github.com/graphql/graphiql)
 - Provides out-of-the box support for Pie Chart, Word Cloud and Bar chart for analyzing responses.
 - Provides GraphiQL IDE to make GraphQL queries
 
+## Demo
+### Creating a form
+### Visualizations of responses
+<img src="public/Charts.gif" width="500" />
+
 ## Contribution guidelines
 This is an open source project, and we welcome contributions. Please open an issue if you have a feature request or better still if you have a PR for us to review. 
 
