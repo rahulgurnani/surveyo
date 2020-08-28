@@ -22,6 +22,14 @@ Hosted [here](https://surveyo.one-click.cloud.dgraph.io/) and create your first 
 ### Visualizations of responses
 <img src="public/Charts.gif" width="450" />
 
+## Code structure and usage
+
+### Running locally
+
+### Auth0 configuration
+We use Auth0 for authorisation. The snippets for auth0 configuration are checked in the code [here](https://github.com/rahulgurnani/surveyo/tree/master/auth0_snippets). The steps of configuring Auth0 dashboard are mentioned in the blog post [here](AddLink). 
+After configuring Auth0 dashboard, update the Auth0 config used in the code present in src/AuthConfig.json.
+
 ## Contribution guidelines
 This is an open source project, and we welcome contributions. Please open an issue if you have a feature request or better still if you have a PR for us to review. 
 
