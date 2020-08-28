@@ -6,16 +6,11 @@ See it [here](https://surveyo.one-click.thegaas.com) and create your first form!
 
 **Front-end**: [React](https://reactjs.org/), [ANT Design](https://ant.design/)
 
-**Back-end**: [Typescript](https://www.typescriptlang.org/), [Slash GraphQL (Database)](https://dgraph.io/slash-graphql)
-
-**Tools**: 
-Authentication: [Auth0](https://auth0.com/)
-One-click Deploy: [Slash GraphQL](https://dgraph.io/slash-graphql)
-GraphQL queries support: [GraphiQL IDE](https://github.com/graphql/graphiql)
+**Back-end**: [Slash GraphQL (Database)](https://dgraph.io/slash-graphql), [Auth0](https://auth0.com/) is used for creating JWT and create user hook 
 
 ## Features
 - Supports Short Answer, MCQs, Date Query and Rating type of questions.
-- Provides out-of-the box support for Pie Chart, Word Cloud and Bar chart for analyzing responses.
+- Visualize responses collected as Pie Chart, Word Cloud and Bar chart
 - Provides GraphiQL IDE to make GraphQL queries
 
 ## Demo
