@@ -6,7 +6,7 @@ type User @auth(add: {rule: "{$role: {eq: \"AddUser\"}}"}) {
   forms: [Form] @hasInverse(field: creator)
 }
 
-type Form {
+type Form @withSubscription {
   id: ID!
   title: String! @search(by: [hash])
   fields: [Field!]!
@@ -14,7 +14,7 @@ type Form {
   creator: User!
 }
 
-type Field {
+type Field @withSubscription {
   id: ID!
   order: Int!
   type: FieldType!
