@@ -10,7 +10,7 @@ type User @auth(
   forms: [Form] @hasInverse(field: creator)
 }
 
-type Form @auth(
+type Form @withSubscription @auth(
     delete: {rule: "{$role: {eq: \"ADMIN\"}}"},
     update: {rule: "{$role: {eq: \"ADMIN\"}}"}
     ) {
@@ -21,7 +21,7 @@ type Form @auth(
   creator: User!
 }
 
-type Field @auth(
+type Field @withSubscription @auth(
   delete: {
     rule: """
     query ($USER: String!) {
