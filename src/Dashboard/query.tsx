@@ -23,3 +23,29 @@ export const DELETE_FORM = gql`
     }
   }
 `;
+
+export const GET_CSV = gql`
+  query GetCsvResponses($id: ID!) {
+    getForm(id: $id) {
+      fields(order: {asc: order}) {
+        id
+        type
+        title
+      }
+      responses {
+        entries {
+          field {
+            id
+          }
+          date
+          netPromoterScore
+          rating
+          singleChoice @cascade {
+            title
+          }
+          text
+        }
+      }
+    }
+  }
+`;

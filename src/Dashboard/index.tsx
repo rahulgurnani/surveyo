@@ -17,13 +17,22 @@ import {
   ExportOutlined,
   PlusOutlined,
   DeleteOutlined,
+  DownloadOutlined,
+  LoadingOutlined,
+  FileExcelOutlined,
 } from '@ant-design/icons';
-import {useQuery, useMutation} from '@apollo/client';
+import {useQuery, useMutation, useLazyQuery} from '@apollo/client';
 import {useAuth0} from '@auth0/auth0-react';
 import {Link} from 'react-router-dom';
-import {GET_FORMS, DELETE_FORM} from './query';
+import {GET_FORMS, DELETE_FORM, GET_CSV} from './query';
 import {DeleteFormVariables, DeleteForm} from './__generated__/DeleteForm';
 import {GetSurveys, GetSurveysVariables} from './__generated__/GetSurveys';
+import {
+  GetCsvResponses,
+  GetCsvResponsesVariables,
+} from './__generated__/GetCsvResponses';
+import {makeCsv} from './csv';
+import {CSVLink} from 'react-csv';
 
 export default function Dashboard() {
   return (
@@ -111,6 +120,9 @@ function DashboardHelper() {
               <Button type="link" icon={<ExportOutlined />} />
             </Link>
           </Tooltip>
+          <Tooltip title="Download CSV">
+            <DownloadCsv id={record.id} title={record.title} />
+          </Tooltip>
           <Tooltip title="Charts">
             <Link to={`/charts/${record.id}`} target="_blank">
               <Button type="link" icon={<LineChartOutlined />} />
@@ -137,4 +149,32 @@ function DashboardHelper() {
   ];
 
   return <Table columns={tableCols as any} dataSource={state as any} />;
+}
+
+function DownloadCsv(props: any) {
+  const [getCsv, {loading, error, data}] = useLazyQuery<
+    GetCsvResponses,
+    GetCsvResponsesVariables
+  >(GET_CSV);
+
+  if (error) {
+    console.error(error);
+    message.error('Internal error: could not generate CSV');
+  }
+
+  return data ? (
+    <Tooltip title="Download CSV">
+      <CSVLink data={makeCsv(data)} filename={`${props.title}.csv`}>
+        <Button type="link" icon={<DownloadOutlined />} />
+      </CSVLink>
+    </Tooltip>
+  ) : (
+    <Tooltip title="Generate CSV">
+      <Button
+        type="link"
+        icon={loading ? <LoadingOutlined /> : <FileExcelOutlined />}
+        onClick={() => getCsv({variables: {id: props.id}})}
+      />
+    </Tooltip>
+  );
 }
