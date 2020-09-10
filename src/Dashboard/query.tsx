@@ -13,3 +13,13 @@ export const GET_FORMS = gql`
     }
   }
 `;
+
+export const DELETE_FORM = gql`
+  mutation DeleteForm($id: ID!) {
+    deleteForm(filter: {id: [$id]}) {
+      form {
+        id
+      }
+    }
+  }
+`;
