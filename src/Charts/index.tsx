@@ -18,9 +18,7 @@ Chart.defaults.global.defaultFontFamily = 'Ubuntu';
 
 export default function VizPage() {
   return (
-    <PageHeader ghost={true} title="Charts">
       <GqlViz />
-    </PageHeader>
   );
 }
 
@@ -60,24 +58,26 @@ function GqlViz() {
         return null;
     }
   };
-
+  
   return (
-    <Row gutter={[16, 16]}>
-      {data!.getForm!.fields.map(field => {
-        const chart = makeChart(field);
-        if (chart) {
-          return (
-            <Col span={12}>
-              <Card style={{height: '100%'}}>
-                <h3>{field.title}</h3>
-                <div style={{height: 'fit-content'}}>{chart}</div>
-              </Card>
-            </Col>
-          );
-        } else {
-          return null;
-        }
-      })}
-    </Row>
+    <PageHeader ghost={true} title={data!.getForm!.title}>
+      <Row gutter={[16, 16]}>
+        {data!.getForm!.fields.map(field => {
+          const chart = makeChart(field);
+          if (chart) {
+            return (
+              <Col span={12}>
+                <Card style={{height: '100%'}}>
+                  <h3>{field.title}</h3>
+                  <div style={{height: 'fit-content'}}>{chart}</div>
+                </Card>
+              </Col>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </Row>
+    </PageHeader>
   );
 }
