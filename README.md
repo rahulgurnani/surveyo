@@ -1,6 +1,6 @@
 # Surveyo
 
-A simple survey form-creator application that can be used to create forms, collect responses, and visualize the aggregate data. It also gives users a GraphQL interface to perform complex queries on the collected data. Code respositroy is [here](https://github.com/rahulgurnani/surveyo).
+A simple survey form-creator application that can be used to create forms, collect responses, and visualize the aggregate data. It also gives users a GraphQL interface to perform complex queries on the collected data. Code repository is [here](https://github.com/rahulgurnani/surveyo).
 
 Hosted [here](https://surveyo.one-click.cloud.dgraph.io/) and create your first form! 
 
